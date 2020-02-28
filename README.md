@@ -2,7 +2,6 @@
 
 Clara Li
 
-
 Shirley Zhang
 
-# Rose
+Rose Porta
