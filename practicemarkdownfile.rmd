@@ -1,0 +1,37 @@
+---
+title: "Practice markdown file"
+author: "Clara Li"
+date: "2/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r load_data}
+data("mtcars")
+```
+
+```{r eda}
+glimpse(mtcars)
+```
+
+
+```{r slr}
+mod1 <- lm(mpg ~ hp, data = mtcars)
+```
+
+
+## Description of the Model
+
+
+
+
+
+
+
+```{r eda}
+```
+
