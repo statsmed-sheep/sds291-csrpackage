@@ -161,7 +161,7 @@ Explanatory variables we plan to control for include demographics (such as age, 
 4. Total combined family income ‘INCFAM07ON’ (https://nhis.ipums.org/nhis-action/variables/INCFAM07ON#codes_section)
 5. Race ‘RACEA’ (https://nhis.ipums.org/nhis-action/variables/RACEA#codes_section)
 6. Health status ‘HEALTH’ (https://nhis.ipums.org/nhis-action/variables/HEALTH#codes_section)
-7. Physical activity level ‘ACTLEVEL’ (https://nhis.ipums.org/nhis-action/variables/ACTLEVEL#codes_section)
+7. Physical activity will be controlled for, but the specific variable we're going to use has yet to be determined.
 8. We think nutrition is an important variable to control for, but we are still figuring out how to do this because we cannot find a variable that summarizes nutrition well. We may have to construct our own.
 
 
