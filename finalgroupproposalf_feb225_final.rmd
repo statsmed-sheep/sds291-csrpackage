@@ -1,0 +1,167 @@
+---
+title: "Final Group Proposal"
+date: "2020-02-28"
+menu:
+  group:
+    parent: Topic Selection
+    weight: 2
+type: docs
+weight: 2
+output:
+  output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Group Name and Members
+
+<!---List your group's name and the first and last name of all group members here--->
+
+**CSRPackage**
+
+Members:
+
+- Clara Li
+- Rose Porta
+- Shirley Zhang
+
+## Association between Sleep, Anxiety, and Healthy Weight Management
+
+<!---Come up with a working title for your project based on your topic and focus.--->
+
+
+## Purpose and Hypotheses
+
+<!---Describe the general topic/phenomenon you want to study, as well some focused questions that you hope to answer and specific hypotheses that you intend to assess.* 
+
+*You should have 1 primary hypothesis of a single assocation between a response-explanatory variable and 1-2 secondary hypotheses, like a secondary outcome and/or testing whether your main asssociation varies (i.e., interacts with) by some third variable--->
+
+Nowadays, excess weight has become an increasingly critical public health concern. Tied to a plethora of health issues, from diabetes to cardiac arrest, and some kinds of cancer, excess weight and obesity were found in 71.6% of adults 20 years and older in a 2015-16 survey by the CDC^[2015-16 survey by the CDC https://www.cdc.gov/nchs/fastats/obesity-overweight.htm]. In order to combat this epidemic of overweightness, research regarding exercise and nutritional habits have continually emerged and disseminated. 
+
+Despite the hefty literature behind exercise and nutrition, sleep has been comparatively little studied. When people think of weight management, they usually think about exercise and nutritional habits, yet few people even consider the effect of their sleep habits or their mental health. Growing evidence, however, has linked lack of sleep to poorer health outcomes. Our analysis aims to model the correlation between the number of hours of sleep per night and body weight and how the additional factor of anxiety interacts with this association. We will also control for a variety of factors already known to influence weight.
+
+
+Our **primary hypothesis** is that there will be a negative correlation between hours of sleep per night and weight; that is, as individuals get fewer hours of sleep, their predicted weight increases. 
+
+It is important to analyze anxiety in relation to sleep when considering the association between sleep and weight, because anxiety is another factor known to be associated with poor physical health. Also, anxiety can be associated with lack of sleep because it can prevent people from experiencing good-quality sleep, so it could be confounding our analysis.
+
+
+Our **secondary hypothesis** is that this negative association between lack of sleep and weight will be stronger for individuals who regularly experience anxiety.
+
+
+## Data 
+
+<!---Describe the data that you plan to use, with specifications of where it can be found (URL) and a short description. We will discuss data management techniques in the coming weeks, but for now you should simply list multiple sources if you have them.--->
+
+This study will use data from  IPUMS-NHIS, the National Health Interview Survey from 2018,  specifically looking at the “WEIGHT”^[WEIGHT https://nhis.ipums.org/nhis-action/variables/WEIGHT#codes_section] and “WORFREQ” variable ^[WORFREQ https://nhis.ipums.org/nhis-action/variables/WORFREQ#codes_section], and the “HRSLEEP” variable ^[ HRSLEEP https://nhis.ipums.org/nhis-action/variables/HRSLEEP#codes_section]. The data was collected by obtaining a random sample of 35,000 U.S. households and randomly selecting one adult and one child (if any were present) from each. Data analysis will be restricted to those 18 years and older, to avoid bias from adolescents undergoing puberty (and possibly sleeping more).
+
+
+## Population
+
+<!---Specify what the observational units are (i.e. the rows of the data frame), describe the larger population/phenomenon to which you'll try to generalize, and (if appropriate) estimate roughly how many such individuals there are in the population.--->
+
+An observational unit comprised of an individual adult in the U.S. surveyed by the CDC’s National Center for Health Statistics. The population we intend to generalize our analysis to is the adult population of the United States (roughly 300 million individuals total).
+
+
+## Response Variable
+
+<!---What is the response variable? What are its units? Estimate the range of possible values that it may take on.--->
+
+The response variable is self-reported weight measured in pounds (WEIGHT in NHIS), in response to the question, "About how much does [person] weigh without shoes?" The range we will be analyzing is 100 to274 pounds for women, 126 to 299 pounds for men. Because WEIGHT is a quantitative variable, but if an individual falls above or below a these threshold, they are pooled into one category. 
+
+In order to facilitate the analysis, the following codes will be filtered: (100 for <=100 pounds, women; 126 for <= 126 pounds, men; 274 for <= 274 pounds, women; 299 for <= 299 pounds, men). The codes (997 for unknown-refused, 998 for unknown-not ascertained, and 999 for unknown-don't know) will likewise be omitted.
+
+
+
+## Explanatory Variables
+
+<!---You should have one, primary explanatory variable that is your main hypothesis. You may have other explanatory variables associated with secondary hypotheses (again, no more than 2).*
+
+*Then you will also have explanatory variables that you want to control for -- factors that may be associated with your primary explanatory and your response variables that you want to include in your multiple regression model to adjust your main association for those competing explanations. Demographics (age, sex, race) and socioeconomic status are common ones for individual-level survey data.*
+
+*Carefully define each variable and describe how each was measured (self-report/direct observation). For categorical variables, list the possible categories; for quantitative variables, specify the units of measurement. You may want to add more variables later on, but you should have at least the explanatory variables associated with your hypotheses and 5 additional variables you plan to control for already.--->
+
+### Primary hypothesis
+
+*There will be a negative correlation between hours of sleep per night and weight; that is, as individuals get fewer hours of sleep, their predicted weight increases.*
+
+As stated above, we will restrict this analysis to the adult population of the United States.
+
+
+Our primary hypothesis will use a variable indicating average hours of sleep per night, rounded to the nearest whole hour (HRSLEEP in NHIS). Individuals self-reported the number of hours they slept on average each night in response to the question: “On average, how many hours of sleep do you get in a 24-hour period? Enter hours of sleep in whole numbers, rounding 30 minutes or more up to the next whole hour and dropping the 29 minutes or fewer.”
+
+Answer Options: 01-24 = 1-24 hours; 97 = Refused;  99 = Don't know
+
+The test of our hypothesis will be one-tailed test:
+
+$H_0: \beta1=0$
+
+$H_A: \beta1\ < 0$
+
+We will use a standard significance level of $\alpha=0.05$ when we conduct our significance test.
+
+from the regression model: 
+$$WEIGHT = \beta_0 + \beta_1 HRSLEEP +\beta'X$$
+
+where $\beta'X$ is a vector of variables we are controlling to avoid potential confounding.
+	
+
+
+### Secondary hypotheses
+
+*The negative association between lack of sleep and weight will be stronger for individuals who regularly experience anxiety.*
+
+Our secondary hypothesis will analyze anxiety as a potential factor interacting with sleep and weight.
+
+It will use a variable indicating the frequency an individual experiences anxiety on a 1-5 scale where 1 is daily and 5 is never (WORFREQ in NHIS). Individuals self-reported the frequency with which they felt worried, nervous, or anxious in response to the question, “How often do you feel worried, nervous or anxious? Would you say daily, weekly, monthly, a few times a year, or never?”
+
+Answer options: 1 = Daily; 2 = Weekly; 3 = Monthly; 4 = A few times a year; 5 = Never; 7 = Refused; 9 = Don't know
+
+Additional category codes are given for:0 = NIU (Not in universe); 8 = Unknown- not ascertained
+
+
+
+We will use the standard significance level of $\alpha = 0.05$ when we conduct our significance test. No particular costs or risks are associated with the test and its potential findings that suggest using a different level.
+
+
+The test of our hypothesis will be 
+
+$H_0: \beta3=0$
+
+$H_A: \beta3\neq0$
+
+Tentative model below
+
+$$
+\begin{split}
+WEIGHT = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot WORFREQ + \\
+ \beta_3 \cdot (HRSLEEP \times WORFREQ) +\beta'X
+\end{split}
+$$
+
+<!-- If you're going to use a dichotomous outcome, don't worry about specifying the regression equation since we haven't covered it yet, but think about what it would be. If you're planning to use a linear model, you should be able to write out the regression equation for the test of each hypothesis -->
+
+
+Where $\beta'X$ represents a vector of variables we are controlling for to avoid potential confounding (described in the next section below).
+
+We think we will need to use a factor variable for anxiety because it is categorical, but we are not sure how to incorporate this into our model right now because we have not studied this in depth.
+
+
+### Potential Confounders
+
+Potential Confounders
+Explanatory variables we plan to control for include demographics (such as age, sex, BMI, socioeconomic status, race, health status), and nutritional and physical habits. All variables are self-reported.
+
+1. Age ‘AGE’ (https://nhis.ipums.org/nhis-action/variables/AGE#codes_section)
+2. Sex ‘SEX’ (https://nhis.ipums.org/nhis-action/variables/SEX#codes_section)
+3. BMI ‘BMI’ (https://nhis.ipums.org/nhis-action/variables/BMI#codes_section)
+4. Total combined family income ‘INCFAM07ON’ (https://nhis.ipums.org/nhis-action/variables/INCFAM07ON#codes_section)
+5. Race ‘RACEA’ (https://nhis.ipums.org/nhis-action/variables/RACEA#codes_section)
+6. Health status ‘HEALTH’ (https://nhis.ipums.org/nhis-action/variables/HEALTH#codes_section)
+7. Physical activity will be controlled for, but the specific variable we're going to use has yet to be determined.
+8. We think nutrition is an important variable to control for, but we are still figuring out how to do this because we cannot find a variable that summarizes nutrition well. We may have to construct our own.
+
+
