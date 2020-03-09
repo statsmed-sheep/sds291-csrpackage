@@ -64,7 +64,6 @@ usa_data2 <- usa_data2 %>%
   mutate(empstat_factor = ifelse(EMPSTAT == 1, "employed", "unemployed"))
 ```
 
-
 # Exercise 2. Recode newchild_factor so that it is a binary variable: yes vs. no.
 
 ```{r}
@@ -73,9 +72,7 @@ newchild_factor<-usa_data2 %>%
   mutate(bchild=if_else(newchild_factor=="Yes",1,0))
 ```
 
-# Exercise 3.
-
-Create a binary variable of whether someone was in a STEM field or not from degfield_factor.
+# Exercise 3. Create a binary variable of whether someone was in a STEM field or not from degfield_factor.
 
 ```{r}
 usa_data3 <- usa_data2 %>% 
@@ -84,7 +81,6 @@ usa_data3 <- usa_data2 %>%
   mutate(stem_binary = ifelse(stem_factor == "STEM", 0, 1))
 ```
 
-
 # Exercise 4. Filter only the observations that are currently employed. Remember the filter function that we’ve seen before.
 
 ```{r}
@@ -92,21 +88,20 @@ usa_data2new<-usa_data2 %>%
   filter(empstat_factor == 1)
 ```
 
-
-# Exercise 5.
+# Exercise 5. Keep only the variables that you will need for the analysis (also keep the PERNUM and SERIAL ID variables that help keep the individual and household observations straight.). Read ahead to the Analysis section for the scope of what you want to save here.
 
 ```{r}
 usa_data2new<-usa_data2 %>% 
-  select("AGE", "RACE", "TRANTIME", "degfield_factor", "empstat_factor", "SEX", "newchild_factor", "pernum", "serial", "diffmob_factor", "stem_factor")
+  select("AGE", "RACE", "TRANTIME", "degfield_factor", "empstat_factor", "SEX", "newchild_factor", "serial", "diffmob_factor", "stem_factor")
 ```
 
-# Exercise 6.Use the str() function to have R report the structure of the data to you.
+# Exercise 6. Use the str() function to have R report the structure of the data to you.
+
 ```{r}
 str(usa_data2)
 ```
 
-
-# Exercise 7.Use favstats and tally functions from the mosaic package to look at each of the variables you have included in your data extract.
+# Exercise 7. Use favstats and tally functions from the mosaic package to look at each of the variables you have included in your data extract.
 
 ```{r}
 library(mosaic)
@@ -129,18 +124,19 @@ tally(~IND, data=usa_data2 )
 
 ```
 
+# Exercise 8. Try another approach - use the skimr package
 
-# Exercise 8.
 ```{r}
 library(skimr)
 skim(usa_data2)
 ```
 
-# Exercise 9.Evaluate each variable. Are the distributions what you would expect? Are there unusual values?
+# Exercise 9. Evaluate each variable. Are the distributions what you would expect? Are there unusual values?
 
-# Exercise 10.Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
+# Exercise 10. Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
+
 ```{r}
-m_age_traveltime <- lm(TRANTIME ~ AGE, data= usa_data2)
+m_age_traveltime<-lm(TRANTIME ~ AGE, data=usa_data2)
 summary(m_age_traveltime)
 ```
 
