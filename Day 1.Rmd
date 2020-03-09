@@ -130,7 +130,7 @@ skim(usa_data2)
 
 # Exercise 9.Evaluate each variable. Are the distributions what you would expect? Are there unusual values?
 
-
+The distributions seem to be roughly what we would expect without very close analysis.
 
 # Exercise 10.Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
 ```{r}
