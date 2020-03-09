@@ -84,15 +84,24 @@ usa_data2 <- usa_data2 %>%
 # Exercise 4. Filter only the observations that are currently employed. Remember the filter function that we’ve seen before.
 
 ```{r}
+<<<<<<< HEAD
 usa_data2new<-usa_data2 %>% 
+=======
+usa_data2new <-usa_data2 %>% 
+>>>>>>> 242d9ad4540df23308bd58e557b9efa134819b9c
   filter(empstat_factor == "employed")
 ```
 
 # Exercise 5. Keep only the variables that you will need for the analysis (also keep the PERNUM and SERIAL ID variables that help keep the individual and household observations straight.). Read ahead to the Analysis section for the scope of what you want to save here.
 
 ```{r}
+<<<<<<< HEAD
 usa_data2<-usa_data2 %>% 
   select("AGE", "RACE", "TRANTIME", "degfield_factor", "empstat_factor", "SEX", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor")
+=======
+usa_data2 <- usa_data2 %>% 
+  select("AGE", "RACE", "TRANTIME", "empstat_factor", "SEX", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor")
+>>>>>>> 242d9ad4540df23308bd58e557b9efa134819b9c
 ```
 
 # Exercise 6. Use the str() function to have R report the structure of the data to you.
@@ -106,12 +115,23 @@ str(usa_data2)
 ```{r}
 library(mosaic)
 favstats(~AGE, data=usa_data2)
+<<<<<<< HEAD
 tally(~SEX, data=usa_data2)
 tally(~newchild_factor, data=usa_data2)
 tally(~RACE,data=usa_data2)
 tally(~stem_factor, data=usa_data2)
 tally(~empstat_factor, data=usa_data2)
 tally(~diffmob_factor, data=usa_data2)
+=======
+
+tally(~SEX, data=usa_data2)
+tally(~RACE,data=usa_data2)
+tally(~stem_factor, data=usa_data2 )
+tally(~empstat_factor, data=usa_data2 )
+tally(~diffmob_factor, data=usa_data2 )
+tally(~newchild_factor, data=usa_data2 )
+
+>>>>>>> 242d9ad4540df23308bd58e557b9efa134819b9c
 ```
 
 # Exercise 8. Try another approach - use the skimr package
@@ -128,6 +148,12 @@ tally(~diffmob_factor, data=usa_data2)
 
 # Exercise 10. Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
 
+<<<<<<< HEAD
+=======
+
+
+# Exercise 10.Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
+>>>>>>> 242d9ad4540df23308bd58e557b9efa134819b9c
 ```{r}
 m_age_traveltime<-lm(TRANTIME ~ AGE, data=usa_data2)
 summary(m_age_traveltime)
