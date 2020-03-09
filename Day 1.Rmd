@@ -58,9 +58,26 @@ usa_data2 <- usa_data %>%
 
 # Exercise 1. Make an indicator variable of whether someone is employed or not from empstat_factor. A reminder of the code from where you’ve done this before:
 
+```{r}
+usa_data2 <- usa_data2 %>% 
+  filter(EMPSTAT == 1 | EMPSTAT == 2) %>% 
+  mutate(empstat_factor = ifelse(EMPSTAT == 1, "employed", "unemployed"))
+```
+
+
 # Exercise 2.
 
 # Exercise 3.
+
+Create a binary variable of whether someone was in a STEM field or not from degfield_factor.
+
+```{r}
+usa_data3 <- usa_data2 %>% 
+  filter(degfield_factor != "N/A") %>% 
+  mutate(stem_factor = ifelse(degfield_factor %in% c("Agriculture", "Environment and Natural Resources", "Communication Technologies", "Computer and Information Sciences", "Engineering", "Engineering Technologies", "Family and Consumer Sciences", "Library Science", "Biology and Life Sciences", "Mathematics and Statistics", "Military Technologies", "Physical Sciences", "Nuclear, Industrial Radiology, and Biological Technologies", "Electrical and Mechanic Repairs and Technologies", "Transportation Sciences and Technologies", "Medical and Health Sciences and Services"), "STEM", "NOT")) %>% 
+  mutate(stem_binary = ifelse(stem_factor == "STEM", 0, 1))
+```
+
 
 # Exercise 4.
 
