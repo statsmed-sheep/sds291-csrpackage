@@ -66,7 +66,11 @@ usa_data2 <- usa_data %>%
 
 # Exercise 5.
 
-# Exercise 6.
+# Exercise 6.Use the str() function to have R report the structure of the data to you.
+```{r}
+str(usa_data2)
+```
+
 
 # Exercise 7.
 
