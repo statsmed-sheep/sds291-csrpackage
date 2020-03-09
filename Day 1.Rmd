@@ -105,3 +105,13 @@ skim(usa_data2)
 # Exercise 9.Evaluate each variable. Are the distributions what you would expect? Are there unusual values?
 
 # Exercise 10.Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
+```{r}
+m_age_traveltime <- lm(TRANTIME ~ AGE, data= usa_data2)
+summary(m_age_traveltime)
+```
+
+```{r}
+ggplot(data= usa_data2, aes(x= AGE, y=TRANTIME))+
+  geom_point()
+```
+
