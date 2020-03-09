@@ -77,17 +77,51 @@ usa_data2new<-usa_data2 %>%
 
 # Exercise 5.
 
+<<<<<<< HEAD
 ```{r}
 usa_data2new<-usa_data2 %>% 
   select("AGE", "RACE", "TRANTIME", "degfield_factor", "empstat_factor", "SEX", "newchild_factor", "pernum", "serial", "diffmob_factor", "stem_factor")
 ```
 
 # Exercise 6.
+=======
+# Exercise 6.Use the str() function to have R report the structure of the data to you.
+```{r}
+str(usa_data2)
+```
 
-# Exercise 7.
+
+# Exercise 7.Use favstats and tally functions from the mosaic package to look at each of the variables you have included in your data extract.
+
+```{r}
+library(mosaic)
+favstats(~AGE, data=usa_data2)
+favstats(~UHRSWORK, data=usa_data2)
+favstats(~INCTOT, data=usa_data2)
+favstats(~FTOTINC, data=usa_data2)
+
+tally(~SEX, data=usa_data2)
+tally(~MARST, data=usa_data2)
+tally(~FERTYR, data=usa_data2)
+tally(~RACE,data=usa_data2)
+tally(~HISPAN,data=usa_data2)
+tally(~HCOVANY,data=usa_data2)
+tally(~EDUC,data=usa_data2)
+tally(~DEGFIELD, data=usa_data2 )
+tally(~EMPSTAT, data=usa_data2 )
+tally(~OCC, data=usa_data2 )
+tally(~IND, data=usa_data2 )
+
+```
+>>>>>>> 982c8a63795399ae175396503941bbeb73fd068f
+
 
 # Exercise 8.
+```{r}
+library(skimr)
+skim(usa_data2)
+```
 
-# Exercise 9.
+# Exercise 9.Evaluate each variable. Are the distributions what you would expect? Are there unusual values?
 
-# Exercise 10.
+# Exercise 10.Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
