@@ -1,0 +1,77 @@
+---
+title: "Day 1"
+author: "Clara Li"
+date: "3/9/2020"
+output: pdf_document
+---
+```{r include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+# Some customization to format the file, bring in the data you need.  Do not alter.
+
+# knitr settings to control how R chunks work and how the pdf is compiled when knit.
+require(knitr)
+opts_chunk$set(
+  tidy=TRUE,                     # display code as typed
+  size="small",                   # slightly smaller font for code
+  tidy.opts=list(width.cutoff=65), # wrap text and long comments
+  fig.width=7, fig.height=5           #figure size
+)
+#Requiring Stat2Data package for the data
+# If you're working locally on your computer, you will need to install some of these packages--see code below.
+#install.packages(Stat2Data) 
+require(Stat2Data)
+require(tidyverse)
+require(ipumsr)
+require(mosaic)
+require(stargazer)
+require(skimr)
+```
+
+```{r}
+# Note that you can pass in the loaded DDI into the `read_ipums_micro()`
+usa_ddi <- read_ipums_ddi("usa_00001.xml")
+usa_data <- read_ipums_micro(usa_ddi, verbose = FALSE)
+
+#Finding the variables that have a label
+usa_data %>%
+  select_if(is.labelled)
+
+# Convert the labels to factors (and drop the unused levels)
+usa_data2 <- usa_data %>%
+  mutate(sex_factor = droplevels(as_factor(SEX)),
+         marital_factor=droplevels(as_factor(MARST)),
+         newchild_factor=droplevels(as_factor(FERTYR)),
+         race_factor= droplevels(as_factor(RACE)),
+         hispan_factor= droplevels(as_factor(HISPAN)),
+         educ_factor= droplevels(as_factor(EDUC)),
+         hinsur_factor= droplevels(as_factor(HCOVANY)),
+         degfield_factor= droplevels(as_factor(DEGFIELD)),
+         empstat_factor= droplevels(as_factor(EMPSTAT)),
+         occ_factor= droplevels(as_factor(OCC)),
+         ind_factor= droplevels(as_factor(IND)),
+         diffmob_factor=droplevels(as_factor(DIFFMOB)),
+         diffcare_factor=droplevels(as_factor(DIFFCARE)),
+         vetstat_factor=droplevels(as_factor(VETSTAT)),
+         pwstate_factor=droplevels(as_factor(PWSTATE2)),
+         tranwork_factor=droplevels(as_factor(TRANWORK))
+  )
+```
+
+# Exercise 1. Make an indicator variable of whether someone is employed or not from empstat_factor. A reminder of the code from where you’ve done this before:
+
+# Exercise 2.
+
+# Exercise 3.
+
+# Exercise 4.
+
+# Exercise 5.
+
+# Exercise 6.
+
+# Exercise 7.
+
+# Exercise 8.
+
+# Exercise 9.
+
+# Exercise 10.
