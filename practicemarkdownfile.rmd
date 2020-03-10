@@ -36,5 +36,10 @@ ddi <- read_ipums_ddi("nhis_00003.xml")
 data <- read_ipums_micro(ddi)
 
 ```
+```{r}
+data <- data %>% 
+  mutate( activity_score = (9 * VIG10FWK + 5 * MOD10FWK + 3 *   STRONGFWK))
+
+```
 
 
