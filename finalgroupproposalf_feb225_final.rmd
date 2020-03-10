@@ -163,8 +163,6 @@ WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFe
 \end{split}
 $$
 
-# Data Extract and Analysis Plan
-
 ## Potential Confounders
 
 Potential Confounders
@@ -188,6 +186,7 @@ Code we are planning to use: mutate(activity_score = (9 * VIG10FWK + 5 * MOD10FW
 
 8. Nutrition is unfortunately unavailable for the sample year 2018.
 
+# Data Extract and Analysis Plan
 
 ## Variables we are requesting from IPUMS:
 
