@@ -77,14 +77,13 @@ usa_data2new<-usa_data2 %>%
 
 # Exercise 5.
 
-<<<<<<< HEAD
+
 ```{r}
 usa_data2new<-usa_data2 %>% 
   select("AGE", "RACE", "TRANTIME", "degfield_factor", "empstat_factor", "SEX", "newchild_factor", "pernum", "serial", "diffmob_factor", "stem_factor")
 ```
 
-# Exercise 6.
-=======
+
 # Exercise 6.Use the str() function to have R report the structure of the data to you.
 ```{r}
 str(usa_data2)
@@ -113,7 +112,7 @@ tally(~OCC, data=usa_data2 )
 tally(~IND, data=usa_data2 )
 
 ```
->>>>>>> 982c8a63795399ae175396503941bbeb73fd068f
+
 
 
 # Exercise 8.
