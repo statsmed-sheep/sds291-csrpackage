@@ -107,8 +107,13 @@ from the regression model:
 $$WEIGHT = \beta_0 + \beta_1 HRSLEEP +\beta'X$$
 
 where $\beta'X$ is a vector of variables we are controlling to avoid potential confounding.
-	
 
+Current Hypothetical model:
+$$\begin{split}
+WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP + \beta_3\cdot SEXFemale + \beta_4\cdot  BMI \\
++ \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)\\
++ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score +\epsilon
+\end{split}$$
 
 ### Secondary hypotheses
 
@@ -149,8 +154,18 @@ Where $\beta'X$ represents a vector of variables we are controlling for to avoid
 
 We think we will need to use a factor variable for anxiety because it is categorical, but we are not sure how to incorporate this into our model right now because we have not studied this in depth.
 
+Current Hypothetical Model:
+$$
+\begin{split}
+WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFemale \\
++ \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA) \\
++ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score + \beta_9\cdot as.factor(WORFREQ) + \epsilon
+\end{split}
+$$
 
-### Potential Confounders
+# Data Extract and Analysis Plan
+
+## Potential Confounders
 
 Potential Confounders
 Explanatory variables we plan to control for include demographics (such as age, sex, BMI, socioeconomic status, race, health status), and nutritional and physical habits. All variables are self-reported.
@@ -161,7 +176,54 @@ Explanatory variables we plan to control for include demographics (such as age, 
 4. Total combined family income ‘INCFAM07ON’ (https://nhis.ipums.org/nhis-action/variables/INCFAM07ON#codes_section)
 5. Race ‘RACEA’ (https://nhis.ipums.org/nhis-action/variables/RACEA#codes_section)
 6. Health status ‘HEALTH’ (https://nhis.ipums.org/nhis-action/variables/HEALTH#codes_section)
-7. Physical activity will be controlled for, but the specific variable we're going to use has yet to be determined.
-8. We think nutrition is an important variable to control for, but we are still figuring out how to do this because we cannot find a variable that summarizes nutrition well. We may have to construct our own.
+7.Physical activity will be controlled for, but specific variable is to be determined.
+Godin Leisure-Time Physical Activity Questionnaire: https://sds291-spring2020.slack.com/files/USTPGGJ10/FV1FTP2P2/godin_leisure-time_exercise_questionnaire_070815.pdf
+Number of times per week strength training STRONGFWK (https://nhis.ipums.org/nhis-action/variables/STRONGFWK#codes_section)
+Number of times per week moderate activity for 10+ min MOD10FWK (https://nhis.ipums.org/nhis-action/variables/MOD10FWK#codes_section)
+Number of times per week vigorous activity for 10+ min VIG10FWK
+https://nhis.ipums.org/nhis-action/variables/VIG10FWK#codes_section
+
+The physical activity variable will be a numerical variable calculated based on weekly leisure activity score = (9 × Strenuous) + (5 × Moderate) + (3 × Light) from the Godin Leisure-Time Physical Activity Questionnaire. Here we decided to equate light activity with strength training.
+Code we are planning to use: mutate(activity_score = (9 * VIG10FWK + 5 * MOD10FWK + 3 * STRONGFWK)
+
+8. Nutrition is unfortunately unavailable for the sample year 2018.
+
+
+## Variables we are requesting from IPUMS:
+
+1. WEIGHT (weight in pounds, response)
+2. HRSLEEP (hours of sleep each night on average, primary explanatory)
+3. WORFREQ (anxiety frequency, 1-5 scale (categorical), secondary explanatory)
+4. AGE (age in years, potential confounder)
+5. SEX (indicator male versus female, potential confounder)
+6. BMI (body mass index, potential confounder)
+7. RACEA (race (categorical), potential confounder)
+8. HEALTH (health status (categorical), potential confounder)
+9. INCFAM07ON (income (categorical), potential confounder)
+10. STRONGFWK (number of times per week spent doing strengthening physical activity for 10+ minutes, potential confounder)
+11. MOD10FWK (number of times per week spent doing moderate physical activity for 10+ minutes, potential confounder)
+12. VIG10FWK (number of times per week spent doing vigorous physical activity for 10+ minutes, potential confounder)
+
+
+## Variables to filter out:
+Year
+Strata
+PSU
+FMX
+PX
+PERWEIGHT
+SAMPWEIGHT
+ASTATFLG
+CSTATFLG
+
+Current hypothetical models:
+
+Primary hypothesis (predicting weight based on hours of sleep, adjusting for potential confounders)
+$$WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFemale + \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)+ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score +\epsilon$$
+
+Secondary hypothesis (predicting weight based on hours of sleep and anxiety frequency, adjusting for potential confounders)
+$$WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFemale + \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)+ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score + \beta_9\cdot as.factor(WORFREQ) + \epsilon$$
+
+Note: We will need to analyze the distributions of all of our categorical variables and consider collapsing some of the categories to simplify our model. The ones we are considering collapsing are INCFAM07ON, RACEA, HEALTH, and WORFREQ. After fitting our initial models, we will also have to consider which variables may need interaction terms. We will also need to filter out all of the values that are not applicable to our analysis for each variable such as not in universe, other, unknown, and values that lie above and below certain thresholds, where they became increasingly identifiable and were either bottom or top-coded by the IPUMS NHIS researchers.
 
 
