@@ -218,10 +218,22 @@ CSTATFLG
 Current hypothetical models:
 
 Primary hypothesis (predicting weight based on hours of sleep, adjusting for potential confounders)
-$$WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFemale + \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)+ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score +\epsilon$$
+$$
+\begin{split}
+WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2 \cdot AGE +\beta_3\cdot SEXFemale 
+\\ + \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)
+\\+ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score +\epsilon
+\end{split}
+$$
 
 Secondary hypothesis (predicting weight based on hours of sleep and anxiety frequency, adjusting for potential confounders)
-$$WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFemale + \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)+ \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score + \beta_9\cdot as.factor(WORFREQ) + \epsilon$$
+$$
+\begin{split}
+WEIGHT = \beta_0 + \beta_1\cdot HRSLEEP +\beta_2\cdot  AGE + \beta_3\cdot  SEXFemale 
+\\ + \beta_4\cdot  BMI + \beta_5\cdot  as.factor(INCFAM07ON) + \beta_6\cdot  as.factor(RACEA)
+\\ + \beta_7\cdot as.factor(HEALTH) + \beta_8\cdot activity_score + \beta_9\cdot as.factor(WORFREQ) + \epsilon
+\end{split}
+$$
 
 Note: We will need to analyze the distributions of all of our categorical variables and consider collapsing some of the categories to simplify our model. The ones we are considering collapsing are INCFAM07ON, RACEA, HEALTH, and WORFREQ. After fitting our initial models, we will also have to consider which variables may need interaction terms. We will also need to filter out all of the values that are not applicable to our analysis for each variable such as not in universe, other, unknown, and values that lie above and below certain thresholds, where they became increasingly identifiable and were either bottom or top-coded by the IPUMS NHIS researchers.
 
