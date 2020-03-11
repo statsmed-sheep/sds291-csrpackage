@@ -245,7 +245,7 @@ usadata.df <- data.frame(intercepts = intercepts,
                        Race = levels(usa_data2$race_factor))
 #making the plot
 usaplot1<- ggplot(usa_data2, aes(x = AGE, y = TRANTIME)) + geom_point(color="grey", alpha = .1) + labs( x= 'Age', y='Commute Time (Minutes)') +
-coord_cartesian(ylim = c(0,100)) + 
+coord_cartesian(ylim = c(20,30)) + 
   geom_abline(aes(intercept = intercepts, 
                   slope = slopes, 
                   color = Race), data = usadata.df)
