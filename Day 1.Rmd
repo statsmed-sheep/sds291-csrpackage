@@ -93,9 +93,8 @@ usa_data2new <-usa_data2 %>%
 
 ```{r}
 usa_data2<-usa_data2 %>% 
-  select("AGE", "RACE", "TRANTIME", "degfield_factor", "empstat_factor", "SEX", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor")
+  select("AGE", "RACE", "TRANTIME", "empstat_factor", "SEX", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor")
 ```
-
 
 
 # Exercise 6.Use the str() function to have R report the structure of the data to you.
@@ -142,3 +141,88 @@ ggplot(data= usa_data2, aes(x= AGE, y=TRANTIME))+
   geom_point()
 ```
 
+# Day 2- Analysis
+
+## Exercise 11. List which confounders you chose and provide a brief justification (~1 sentence) for why you think each variable is important to control for.
+
+We chose to control for:
+
+1. empstat_factor (whether or not a person is employed)
+
+2. SEX
+
+3. newchild_factor (whether or not the person has had a new child in the past year)
+
+4. diffmob_factor (whether or not an individual has mobility difficulties)
+
+5. stem_factor (whether or not an individual works in a STEM field)
+
+## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
+
+## Exercise 13. Interpret the coefficient for age in a sentence.
+
+## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
+
+## Exercise 15. Interpret the coefficient for age in a sentence.
+
+## Exercise 16. What is the magnitude of the association between age and travel time for people of white race in your sample?
+
+## Exercise 17. Use a nested F-test to compare this model to the model above without the interaction term. Interpret what you find in the context of this real world data example.
+
+## Exercise 18. Build your model, and save it as m3.
+
+## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
+
+## Exercise 20. What are the limitations of this model?
+
+## Exercise 21. Use the code below to generate a formatted table of your regression model output. Note that you’ll need to add in results="asis" in the beginning of the R code chunk (i.e., {r, message=FALSE, results="asis"}) to get the table output correctly.
+
+```{r, message=FALSE, results="asis"}
+library(stargazer)
+stargazer(m1,m2,m3, type="text")
+```
+
+
+## Exercise 22.Use the code below to generate a figure depicting the second model.
+
+```{r}
+#calculating the different intercepts
+intercepts <- c(coef(m2)["(Intercept)"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorBlack/African American/Negro"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorAmerican Indian or Alaska Native"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorChinese"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorJapanese"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorOther Asian or Pacific Islander"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorOther race, nec"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorTwo major races"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorThree or more major races"])
+
+
+
+slopes <- c(coef(m2)["AGE"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorBlack/African American/Negro"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorAmerican Indian or Alaska Native"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorChinese"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorJapanese"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorOther Asian or Pacific Islander"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorOther race, nec"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorTwo major races"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorThree or more major races"])
+
+#putting these into a new data frame with the slope and transmission indicator variable
+usadata.df <- data.frame(intercepts = intercepts,
+                       slopes = slopes,
+                       Race = levels(usa_data2$race_factor))
+#making the plot
+usaplot1<- ggplot(usa_data2, aes(x = AGE, y = TRANTIME)) + geom_point(color="grey", alpha = .1) + labs( x= 'Age', y='Commute Time (Minutes)') +
+coord_cartesian(ylim = c(0,100)) + 
+  geom_abline(aes(intercept = intercepts, 
+                  slope = slopes, 
+                  color = Race), data = usadata.df)
+usaplot1
+```
+
+
+## Exercise 23. Specify different coordinates for the y-axis to start and end (coord_cartesian) to zoom in on the pattern.
+
+## Exercise 24. How does this pattern explain your explanation of these patterns from the model output above? Explain in a paragraph of 3-5 sentences.
