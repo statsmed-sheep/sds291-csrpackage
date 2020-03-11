@@ -92,7 +92,9 @@ usa_data2new <-usa_data2 %>%
 
 ```{r}
 usa_data2<-usa_data2 %>% 
-  select("AGE", "RACE", "TRANTIME", "empstat_factor", "SEX", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor")
+  select("AGE", "race_factor", "TRANTIME", "sex_factor", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor") %>% 
+  filter(newchild_factor != "N/A") %>% 
+  mutate(diffmob_factor = ifelse("No independent living difficulty", "No", "Yes"))
 ```
 
 # Exercise 6.Use the str() function to have R report the structure of the data to you.
@@ -106,11 +108,10 @@ str(usa_data2)
 ```{r}
 library(mosaic)
 favstats(~AGE, data=usa_data2)
-tally(~SEX, data=usa_data2)
+tally(~sex_factor, data=usa_data2)
 tally(~newchild_factor, data=usa_data2)
-tally(~RACE,data=usa_data2)
+tally(~race_factor,data=usa_data2)
 tally(~stem_factor, data=usa_data2)
-tally(~empstat_factor, data=usa_data2)
 tally(~diffmob_factor, data=usa_data2)
 ```
 
@@ -143,20 +144,18 @@ ggplot(data= usa_data2, aes(x= AGE, y=TRANTIME))+
 
 We chose to control for:
 
-1. empstat_factor (whether or not a person is employed)
+1. SEX, because 
 
-2. SEX, because 
+2. newchild_factor (whether or not the person has had a new child in the past year), because new parents may be less willing to spend time away from their child.
 
-3. newchild_factor (whether or not the person has had a new child in the past year), because new parents may be less willing to spend time away from their child.
+3. diffmob_factor (whether or not an individual has mobility difficulties), because individuals with limited mobility may be less tolerant of long commutes.
 
-4. diffmob_factor (whether or not an individual has mobility difficulties), because individuals with limited mobility may be less tolerant of long commutes.
-
-5. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
+4. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
 
 ## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
 
 ```{r}
-m1 <- lm(TRANTIME ~ AGE + SEX + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m1 <- lm(TRANTIME ~ AGE + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m1)
 ```
 
@@ -167,10 +166,13 @@ For every additional year in age, the average commute time is predicted to decre
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
 
 ```{r}
-
+m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + SEX + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+summary(m2)
 ```
 
 ## Exercise 15. Interpret the coefficient for age in a sentence.
+
+For every additional year in age, the average commute time is predicted to decrease by 0.04 minutes, allowing for simultaneous changes in race, sex, new children, mobility issues, and whether or not the job is STEM-related. The relationship between age and commute time is shown to vary significantly across race (p = 0.000275, \alpha)
 
 ## Exercise 16. What is the magnitude of the association between age and travel time for people of white race in your sample?
 
