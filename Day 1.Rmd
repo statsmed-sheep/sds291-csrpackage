@@ -200,8 +200,9 @@ m3<-lm(TRANTIME ~ AGE + race_factor_simple + AGE * race_factor_simple +  newchil
 summary(m3)
 ```
 
-
 ## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
+
+We chose this model because the addition of the interaction term explained significantly more variation in commute time, as shown by the nested F-test. However, many of the individual categories for race ended up being insignificant. We therefore decided to collapse the categories into broader groups of "White" vs. "Non-white", resulting in an insignificant p-value for race, but a significant p-value of 7.76e-05 for the interaction term between race and age.
 
 ## Exercise 20. What are the limitations of this model?
 
