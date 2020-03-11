@@ -106,7 +106,6 @@ str(usa_data2)
 ```{r}
 library(mosaic)
 favstats(~AGE, data=usa_data2)
-tally(~sex_factor, data=usa_data2)
 tally(~newchild_factor, data=usa_data2)
 tally(~race_factor,data=usa_data2)
 tally(~stem_factor, data=usa_data2)
@@ -142,13 +141,11 @@ ggplot(data= usa_data2, aes(x= AGE, y=TRANTIME))+
 
 We chose to control for:
 
-1. SEX, because 
+1. newchild_factor (whether or not the person has had a new child in the past year), because new parents may be less willing to spend time away from their child.
 
-2. newchild_factor (whether or not the person has had a new child in the past year), because new parents may be less willing to spend time away from their child.
+2. diffmob_factor (whether or not an individual has mobility difficulties), because individuals with limited mobility may be less tolerant of long commutes.
 
-3. diffmob_factor (whether or not an individual has mobility difficulties), because individuals with limited mobility may be less tolerant of long commutes.
-
-4. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
+3. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
 
 ## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
 
@@ -164,15 +161,17 @@ For every additional year in age, the average commute time is predicted to decre
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
 
 ```{r}
-m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m2)
 ```
 
 ## Exercise 15. Interpret the coefficient for age in a sentence.
 
-For every additional year in age, the average commute time is predicted to decrease by 0.04 minutes, allowing for simultaneous changes in race, sex, new children, mobility issues, and whether or not the job is STEM-related. The relationship between age and commute time is shown to vary significantly across race (p = 0.000275, \alpha)
+For every additional year in age, the average commute time is predicted to decrease by 0.04 minutes, allowing for simultaneous changes in race, the interaction between race and age, sex, new children, mobility issues, and whether or not the job is STEM-related. The relationship between age and commute time is shown to vary significantly across race (p = 0.000275, \alpha)
 
 ## Exercise 16. What is the magnitude of the association between age and travel time for people of white race in your sample?
+
+
 
 ## Exercise 17. Use a nested F-test to compare this model to the model above without the interaction term. Interpret what you find in the context of this real world data example.
 
