@@ -204,7 +204,7 @@ summary(m3)
 ## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
 
 ## Exercise 20. What are the limitations of this model?
-
+   There are other possible confounding variables that we didn't account for. Since we haven't tested the regression analysis, we are not sure that every explanatory variables have a linear relationship to the travel time. 
 ## Exercise 21. Use the code below to generate a formatted table of your regression model output. Note that you’ll need to add in results="asis" in the beginning of the R code chunk (i.e., {r, message=FALSE, results="asis"}) to get the table output correctly.
 
 ```{r, message=FALSE, results="asis"}
