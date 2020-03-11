@@ -206,6 +206,7 @@ We chose this model because the addition of the interaction term explained signi
 
 ## Exercise 20. What are the limitations of this model?
    There are other possible confounding variables that we didn't account for. Since we haven't tested the regression analysis, we are not sure that every explanatory variables have a linear relationship to the travel time. 
+   
 ## Exercise 21. Use the code below to generate a formatted table of your regression model output. Note that you’ll need to add in results="asis" in the beginning of the R code chunk (i.e., {r, message=FALSE, results="asis"}) to get the table output correctly.
 
 ```{r, message=FALSE, results="asis"}
@@ -245,7 +246,7 @@ usadata.df <- data.frame(intercepts = intercepts,
                        Race = levels(usa_data2$race_factor))
 #making the plot
 usaplot1<- ggplot(usa_data2, aes(x = AGE, y = TRANTIME)) + geom_point(color="grey", alpha = .1) + labs( x= 'Age', y='Commute Time (Minutes)') +
-coord_cartesian(ylim = c(0,100)) + 
+coord_cartesian(ylim = c(20,30)) + 
   geom_abline(aes(intercept = intercepts, 
                   slope = slopes, 
                   color = Race), data = usadata.df)
