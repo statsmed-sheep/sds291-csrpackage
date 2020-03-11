@@ -1,6 +1,6 @@
 ---
-title: "Day 1"
-author: "Clara Li, Shirley Zhang, Rose Porta"
+title: "Day 2"
+author: "Rose Porta, Shirley Zhang, Clara Li"
 date: "3/9/2020"
 output: pdf_document
 ---
@@ -90,15 +90,12 @@ usa_data2new <-usa_data2 %>%
 
 # Exercise 5. Keep only the variables that you will need for the analysis (also keep the PERNUM and SERIAL ID variables that help keep the individual and household observations straight.). Read ahead to the Analysis section for the scope of what you want to save here.
 
-
 ```{r}
 usa_data2<-usa_data2 %>% 
   select("AGE", "RACE", "TRANTIME", "empstat_factor", "SEX", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor")
 ```
 
-
 # Exercise 6.Use the str() function to have R report the structure of the data to you.
-
 
 ```{r}
 str(usa_data2)
@@ -117,7 +114,6 @@ tally(~empstat_factor, data=usa_data2)
 tally(~diffmob_factor, data=usa_data2)
 ```
 
-
 # Exercise 8. Try another approach - use the skimr package
 
 ```{r}
@@ -129,7 +125,7 @@ skim(usa_data2)
 
 The distributions seem to be roughly what we would expect without very close analysis.
 
-# Exercise 10.Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
+# Exercise 10. Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
 
 ```{r}
 m_age_traveltime<-lm(TRANTIME ~ AGE, data=usa_data2)
@@ -141,7 +137,7 @@ ggplot(data= usa_data2, aes(x= AGE, y=TRANTIME))+
   geom_point()
 ```
 
-# Day 2- Analysis
+# Day 2 - Analysis
 
 ## Exercise 11. List which confounders you chose and provide a brief justification (~1 sentence) for why you think each variable is important to control for.
 
@@ -149,19 +145,27 @@ We chose to control for:
 
 1. empstat_factor (whether or not a person is employed)
 
-2. SEX
+2. SEX, because 
 
-3. newchild_factor (whether or not the person has had a new child in the past year)
+3. newchild_factor (whether or not the person has had a new child in the past year), because new parents may be less willing to spend time away from their child.
 
-4. diffmob_factor (whether or not an individual has mobility difficulties)
+4. diffmob_factor (whether or not an individual has mobility difficulties), because individuals with limited mobility may be less tolerant of long commutes.
 
-5. stem_factor (whether or not an individual works in a STEM field)
+5. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
 
 ## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
+
+```{r}
+
+```
 
 ## Exercise 13. Interpret the coefficient for age in a sentence.
 
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
+
+```{r}
+
+```
 
 ## Exercise 15. Interpret the coefficient for age in a sentence.
 
@@ -169,7 +173,15 @@ We chose to control for:
 
 ## Exercise 17. Use a nested F-test to compare this model to the model above without the interaction term. Interpret what you find in the context of this real world data example.
 
+```{r}
+
+```
+
 ## Exercise 18. Build your model, and save it as m3.
+
+```{r}
+
+```
 
 ## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
 
@@ -181,7 +193,6 @@ We chose to control for:
 library(stargazer)
 stargazer(m1,m2,m3, type="text")
 ```
-
 
 ## Exercise 22.Use the code below to generate a figure depicting the second model.
 
@@ -221,7 +232,6 @@ coord_cartesian(ylim = c(0,100)) +
                   color = Race), data = usadata.df)
 usaplot1
 ```
-
 
 ## Exercise 23. Specify different coordinates for the y-axis to start and end (coord_cartesian) to zoom in on the pattern.
 
