@@ -1,7 +1,7 @@
 ---
 title: "Day 2"
 author: "Rose Porta, Shirley Zhang, Clara Li"
-date: "3/9/2020"
+date: "3/11/2020"
 output: pdf_document
 ---
 ```{r include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
@@ -265,3 +265,7 @@ The answer is shown above.
 
 ## Exercise 24. How does this pattern explain your explanation of these patterns from the model output above? Explain in a paragraph of 3-5 sentences.
 
+<<<<<<< HEAD
+=======
+This plot supports the result of our nested F-test for model 1 and model 2. Our test showed that model 2, which has the interaction term between race_factor and age, explains significantly more variation than the model that does not include this interaction term. The significance of the interaction term indicates that the slopes of the regression lines for each race group are significantly different, i.e., not parallel, and this is evident from the graph.
+>>>>>>> b1a8a2c423f0e234534e43222dc432239dfc10db
