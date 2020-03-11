@@ -107,7 +107,6 @@ str(usa_data2)
 ```{r}
 library(mosaic)
 favstats(~AGE, data=usa_data2)
-tally(~sex_factor, data=usa_data2)
 tally(~newchild_factor, data=usa_data2)
 tally(~race_factor,data=usa_data2)
 tally(~stem_factor, data=usa_data2)
@@ -156,11 +155,9 @@ table(usa_data2$diffmob_factor)
 
 
 ```{r}
-<<<<<<< HEAD
-m1 <- lm(TRANTIME ~ AGE, data = usa_data2)
-=======
+
 m1 <- lm(TRANTIME ~ AGE + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
->>>>>>> 1f51b0afb1b761d08b8569d56f94fdcbb9d210b4
+
 summary(m1)
 ```
 
