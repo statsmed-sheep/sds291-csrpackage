@@ -185,9 +185,9 @@ The magnitude of the association is the coefficient for age, -0.059233, because 
 anova(m1,m2)
 ```
 
-$H_0: \beta2=\beta3=0$
+$$H_0:\beta_2=\beta_3=0$$
 
-$H_A: \beta_i \ne 0$
+$$H_A:\beta_i \ne 0$$
 
 The ANOVA's p-value is <2.2e-16, indicating that the second model including the interaction term between age and race describes significantly more variation in commute time than the model excluding it.
 
