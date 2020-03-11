@@ -92,9 +92,7 @@ usa_data2new <-usa_data2 %>%
 
 ```{r}
 usa_data2<-usa_data2 %>% 
-  select("AGE", "race_factor", "TRANTIME", "sex_factor", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor") %>% 
-  filter(newchild_factor != "N/A") %>% 
-  mutate(diffmob_factor = ifelse("No independent living difficulty", "No", "Yes"))
+  select("AGE", "race_factor", "TRANTIME", "sex_factor", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor") 
 ```
 
 # Exercise 6.Use the str() function to have R report the structure of the data to you.
@@ -155,7 +153,7 @@ We chose to control for:
 ## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
 
 ```{r}
-m1 <- lm(TRANTIME ~ AGE + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m1 <- lm(TRANTIME ~ AGE + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m1)
 ```
 
@@ -166,7 +164,7 @@ For every additional year in age, the average commute time is predicted to decre
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
 
 ```{r}
-m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + SEX + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m2)
 ```
 
