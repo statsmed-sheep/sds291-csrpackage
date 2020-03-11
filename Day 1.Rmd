@@ -166,13 +166,13 @@ For every additional year in age, the average commute time is predicted to decre
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
 
 ```{r}
-m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + SEX + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m2)
 ```
 
 ## Exercise 15. Interpret the coefficient for age in a sentence.
 
-For every additional year in age, the average commute time is predicted to decrease by 0.04 minutes, allowing for simultaneous changes in race, sex, new children, mobility issues, and whether or not the job is STEM-related. The relationship between age and commute time is shown to vary significantly across race (p = 0.000275, \alpha)
+For every additional year in age, the average commute time is predicted to decrease by 0.04 minutes, allowing for simultaneous changes in race, the interaction between race and age, sex, new children, mobility issues, and whether or not the job is STEM-related. The relationship between age and commute time is shown to vary significantly across race (p = 0.000275, \alpha)
 
 ## Exercise 16. What is the magnitude of the association between age and travel time for people of white race in your sample?
 
