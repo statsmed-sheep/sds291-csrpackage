@@ -153,9 +153,13 @@ We chose to control for:
 4. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
 
 ## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
+```{r}
+table(usa_data2$diffmob_factor)
+```
+
 
 ```{r}
-m1 <- lm(TRANTIME ~ AGE + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m1 <- lm(TRANTIME ~ AGE, data = usa_data2)
 summary(m1)
 ```
 
@@ -166,7 +170,7 @@ For every additional year in age, the average commute time is predicted to decre
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
 
 ```{r}
-m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + SEX + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + sex_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m2)
 ```
 
@@ -187,6 +191,7 @@ For every additional year in age, the average commute time is predicted to decre
 ```{r}
 
 ```
+
 
 ## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
 
