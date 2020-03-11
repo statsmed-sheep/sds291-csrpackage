@@ -92,8 +92,7 @@ usa_data2new <-usa_data2 %>%
 
 ```{r}
 usa_data2<-usa_data2 %>% 
-  select("AGE", "race_factor", "TRANTIME", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor") # %>% 
-  # mutate(diffmob_factor = ifelse(diffmob_factor == "No independent living difficulty", "No", "Yes"))
+  select("AGE", "race_factor", "TRANTIME", "sex_factor", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor") 
 ```
 
 # Exercise 6.Use the str() function to have R report the structure of the data to you.
@@ -178,7 +177,7 @@ For every additional year in age, the average commute time is predicted to decre
 
 ## Exercise 16. What is the magnitude of the association between age and travel time for people of white race in your sample?
 
-
+The magnitude of the association is the coefficient for age, -0.059233, because the white race is the reference group for race. This means that for white individuals, the model predicts that for each year older the person is, their travel time will decrease by 0.059 minutes on average, adjusting for the other confounding variables.
 
 ## Exercise 17. Use a nested F-test to compare this model to the model above without the interaction term. Interpret what you find in the context of this real world data example.
 
