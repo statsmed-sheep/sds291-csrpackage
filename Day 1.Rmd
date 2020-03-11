@@ -205,13 +205,9 @@ summary(m3)
 We chose this model because the addition of the interaction term explained significantly more variation in commute time, as shown by the nested F-test. However, many of the individual categories for race ended up being insignificant. We therefore decided to collapse the categories into broader groups of "White" vs. "Non-white", resulting in an insignificant p-value for race, but a significant p-value of 7.76e-05 for the interaction term between race and age.
 
 ## Exercise 20. What are the limitations of this model?
-<<<<<<< HEAD
 
-   There are other possible confounding variables that we didn't account for. Since we haven't tested the regression analysis, we are not sure that every explanatory variable has a linear relationship to the travel time. 
-=======
    There are other possible confounding variables that we didn't account for. Since we haven't tested the regression analysis, we are not sure that every explanatory variables have a linear relationship to the travel time. 
->>>>>>> a9c88ea5da11a5a26544e88562117c33a20fa93c
-   
+
 ## Exercise 21. Use the code below to generate a formatted table of your regression model output. Note that you’ll need to add in results="asis" in the beginning of the R code chunk (i.e., {r, message=FALSE, results="asis"}) to get the table output correctly.
 
 ```{r, message=FALSE, results="asis"}
@@ -265,7 +261,4 @@ The answer is shown above.
 
 ## Exercise 24. How does this pattern explain your explanation of these patterns from the model output above? Explain in a paragraph of 3-5 sentences.
 
-<<<<<<< HEAD
-=======
 This plot supports the result of our nested F-test for model 1 and model 2. Our test showed that model 2, which has the interaction term between race_factor and age, explains significantly more variation than the model that does not include this interaction term. The significance of the interaction term indicates that the slopes of the regression lines for each race group are significantly different, i.e., not parallel, and this is evident from the graph.
->>>>>>> b1a8a2c423f0e234534e43222dc432239dfc10db
