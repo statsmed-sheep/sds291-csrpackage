@@ -205,7 +205,7 @@ summary(m3)
 We chose this model because the addition of the interaction term explained significantly more variation in commute time, as shown by the nested F-test. However, many of the individual categories for race ended up being insignificant. We therefore decided to collapse the categories into broader groups of "White" vs. "Non-white", resulting in an insignificant p-value for race, but a significant p-value of 7.76e-05 for the interaction term between race and age.
 
 ## Exercise 20. What are the limitations of this model?
-
+   There are other possible confounding variables that we didn't account for. Since we haven't tested the regression analysis, we are not sure that every explanatory variables have a linear relationship to the travel time. 
 ## Exercise 21. Use the code below to generate a formatted table of your regression model output. Note that you’ll need to add in results="asis" in the beginning of the R code chunk (i.e., {r, message=FALSE, results="asis"}) to get the table output correctly.
 
 ```{r, message=FALSE, results="asis"}
