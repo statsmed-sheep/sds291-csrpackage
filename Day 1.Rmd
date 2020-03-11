@@ -149,8 +149,12 @@ We chose to control for:
 
 ## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
 
+
+
 ```{r}
+
 m1 <- lm(TRANTIME ~ AGE + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+
 summary(m1)
 ```
 
@@ -161,7 +165,9 @@ For every additional year in age, the average commute time is predicted to decre
 ## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
 
 ```{r}
+
 m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+
 summary(m2)
 ```
 
@@ -176,14 +182,16 @@ The magnitude of the association is the coefficient for age, -0.059233, because 
 ## Exercise 17. Use a nested F-test to compare this model to the model above without the interaction term. Interpret what you find in the context of this real world data example.
 
 ```{r}
-
+anova(m1,m2)
 ```
 
 ## Exercise 18. Build your model, and save it as m3.
 
 ```{r}
-
+m3<-lm(TRANTIME ~ AGE + race_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+summary(m3)
 ```
+
 
 ## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
 
