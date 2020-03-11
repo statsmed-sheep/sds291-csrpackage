@@ -194,7 +194,9 @@ The ANOVA's p-value is <2.2e-16, indicating that the second model including the 
 ## Exercise 18. Build your model, and save it as m3.
 
 ```{r}
-m3<-lm(TRANTIME ~ AGE + race_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+usa_data2 <- usa_data2 %>% 
+  mutate(race_factor_simple = ifelse(race_factor == "White", "white", "non-white"))
+m3<-lm(TRANTIME ~ AGE + race_factor_simple + AGE * race_factor_simple +  newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
 summary(m3)
 ```
 
