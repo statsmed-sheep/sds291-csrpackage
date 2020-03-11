@@ -189,7 +189,7 @@ $H_0: \beta2=\beta3=0$
 
 $H_A: \beta_i \ne 0$
 
-The ANOVA's p-value is <2.2e-16, indicating that the second model including the interaction term between age and race describes signifciantly more variation in commute time than the model excluding it.
+The ANOVA's p-value is <2.2e-16, indicating that the second model including the interaction term between age and race describes significantly more variation in commute time than the model excluding it.
 
 ## Exercise 18. Build your model, and save it as m3.
 
