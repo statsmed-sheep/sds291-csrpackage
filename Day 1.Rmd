@@ -107,7 +107,6 @@ str(usa_data2)
 ```{r}
 library(mosaic)
 favstats(~AGE, data=usa_data2)
-tally(~sex_factor, data=usa_data2)
 tally(~newchild_factor, data=usa_data2)
 tally(~race_factor,data=usa_data2)
 tally(~stem_factor, data=usa_data2)
