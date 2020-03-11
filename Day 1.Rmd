@@ -254,6 +254,7 @@ usaplot1
 ```
 
 ## Exercise 23. Specify different coordinates for the y-axis to start and end (coord_cartesian) to zoom in on the pattern.
+The answer is shown above.
 
 ## Exercise 24. How does this pattern explain your explanation of these patterns from the model output above? Explain in a paragraph of 3-5 sentences.
 
