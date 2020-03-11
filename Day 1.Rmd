@@ -256,3 +256,5 @@ usaplot1
 ## Exercise 23. Specify different coordinates for the y-axis to start and end (coord_cartesian) to zoom in on the pattern.
 
 ## Exercise 24. How does this pattern explain your explanation of these patterns from the model output above? Explain in a paragraph of 3-5 sentences.
+
+This plot supports the result of our nested F-test for model 1 and model 2. Our test showed that model 2, which has the interaction term between race_factor and age, explains significantly more variation than the model that does not include this interaction term. The significance of the interaction term indicates that the slopes of the regression lines for each race group are significantly different, i.e., not parallel, and this is evident from the graph.
