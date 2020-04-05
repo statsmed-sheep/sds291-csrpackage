@@ -1,0 +1,266 @@
+---
+title: "Day 2"
+author: "Rose Porta, Shirley Zhang, Clara Li"
+date: "3/11/2020"
+output:
+  html_document:
+    df_print: paged
+---
+```{r include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
+# Some customization to format the file, bring in the data you need.  Do not alter.
+
+# knitr settings to control how R chunks work and how the pdf is compiled when knit.
+require(knitr)
+opts_chunk$set(
+  tidy=TRUE,                     # display code as typed
+  size="small",                   # slightly smaller font for code
+  tidy.opts=list(width.cutoff=65), # wrap text and long comments
+  fig.width=7, fig.height=5           #figure size
+)
+#Requiring Stat2Data package for the data
+# If you're working locally on your computer, you will need to install some of these packages--see code below.
+#install.packages(Stat2Data) 
+require(Stat2Data)
+require(tidyverse)
+require(ipumsr)
+require(mosaic)
+require(stargazer)
+require(skimr)
+```
+
+```{r}
+# Note that you can pass in the loaded DDI into the `read_ipums_micro()`
+usa_ddi <- read_ipums_ddi("usa_00001.xml")
+usa_data <- read_ipums_micro(usa_ddi, verbose = FALSE)
+
+#Finding the variables that have a label
+usa_data %>%
+  select_if(is.labelled)
+
+# Convert the labels to factors (and drop the unused levels)
+usa_data2 <- usa_data %>%
+  mutate(sex_factor = droplevels(as_factor(SEX)),
+         marital_factor=droplevels(as_factor(MARST)),
+         newchild_factor=droplevels(as_factor(FERTYR)),
+         race_factor= droplevels(as_factor(RACE)),
+         hispan_factor= droplevels(as_factor(HISPAN)),
+         educ_factor= droplevels(as_factor(EDUC)),
+         hinsur_factor= droplevels(as_factor(HCOVANY)),
+         degfield_factor= droplevels(as_factor(DEGFIELD)),
+         empstat_factor= droplevels(as_factor(EMPSTAT)),
+         occ_factor= droplevels(as_factor(OCC)),
+         ind_factor= droplevels(as_factor(IND)),
+         diffmob_factor=droplevels(as_factor(DIFFMOB)),
+         diffcare_factor=droplevels(as_factor(DIFFCARE)),
+         vetstat_factor=droplevels(as_factor(VETSTAT)),
+         pwstate_factor=droplevels(as_factor(PWSTATE2)),
+         tranwork_factor=droplevels(as_factor(TRANWORK))
+  )
+```
+
+# Exercise 1. Make an indicator variable of whether someone is employed or not from empstat_factor. A reminder of the code from where you’ve done this before:
+
+```{r}
+usa_data2 <- usa_data2 %>% 
+  filter(EMPSTAT == 1 | EMPSTAT == 2) %>% 
+  mutate(empstat_factor = ifelse(EMPSTAT == 1, "employed", "unemployed"))
+```
+
+# Exercise 2. Recode newchild_factor so that it is a binary variable: yes vs. no.
+
+```{r}
+newchild_factor<-usa_data2 %>%
+  filter(newchild_factor != "N/A") %>% 
+  mutate(bchild=if_else(newchild_factor=="Yes",1,0))
+```
+
+# Exercise 3. Create a binary variable of whether someone was in a STEM field or not from degfield_factor.
+
+```{r}
+usa_data2 <- usa_data2 %>% 
+  filter(degfield_factor != "N/A") %>% 
+  mutate(stem_factor = ifelse(degfield_factor %in% c("Agriculture", "Environment and Natural Resources", "Communication Technologies", "Computer and Information Sciences", "Engineering", "Engineering Technologies", "Family and Consumer Sciences", "Library Science", "Biology and Life Sciences", "Mathematics and Statistics", "Military Technologies", "Physical Sciences", "Nuclear, Industrial Radiology, and Biological Technologies", "Electrical and Mechanic Repairs and Technologies", "Transportation Sciences and Technologies", "Medical and Health Sciences and Services"), "STEM", "NOT")) %>% 
+  mutate(stem_binary = ifelse(stem_factor == "STEM", 0, 1))
+```
+
+# Exercise 4. Filter only the observations that are currently employed. Remember the filter function that we’ve seen before.
+
+```{r}
+usa_data2new <-usa_data2 %>% 
+  filter(empstat_factor == "employed")
+```
+
+# Exercise 5. Keep only the variables that you will need for the analysis (also keep the PERNUM and SERIAL ID variables that help keep the individual and household observations straight.). Read ahead to the Analysis section for the scope of what you want to save here.
+
+```{r}
+usa_data2<-usa_data2 %>% 
+  select("AGE", "race_factor", "TRANTIME", "sex_factor", "newchild_factor", "SERIAL", "diffmob_factor", "stem_factor") 
+```
+
+# Exercise 6.Use the str() function to have R report the structure of the data to you.
+
+```{r}
+str(usa_data2)
+```
+
+# Exercise 7. Use favstats and tally functions from the mosaic package to look at each of the variables you have included in your data extract.
+
+```{r}
+library(mosaic)
+favstats(~AGE, data=usa_data2)
+tally(~newchild_factor, data=usa_data2)
+tally(~race_factor,data=usa_data2)
+tally(~stem_factor, data=usa_data2)
+tally(~diffmob_factor, data=usa_data2)
+```
+
+# Exercise 8. Try another approach - use the skimr package
+
+```{r}
+library(skimr)
+skim(usa_data2)
+```
+
+# Exercise 9. Evaluate each variable. Are the distributions what you would expect? Are there unusual values?
+
+The distributions seem to be roughly what we would expect without very close analysis.
+
+# Exercise 10. Create and interpret a scatterplot of you main explanatory and response variables: age and travel time. For Unusual Observations, now clarify potential leverage/influence/outliers.
+
+```{r}
+m_age_traveltime<-lm(TRANTIME ~ AGE, data=usa_data2)
+summary(m_age_traveltime)
+```
+
+```{r}
+ggplot(data= usa_data2, aes(x= AGE, y=TRANTIME))+
+  geom_point()
+```
+
+# Day 2 - Analysis
+
+## Exercise 11. List which confounders you chose and provide a brief justification (~1 sentence) for why you think each variable is important to control for.
+
+We chose to control for:
+
+1. newchild_factor (whether or not the person has had a new child in the past year), because new parents may be less willing to spend time away from their child.
+
+2. diffmob_factor (whether or not an individual has mobility difficulties), because individuals with limited mobility may be less tolerant of long commutes.
+
+3. stem_factor (whether or not an individual works in a STEM field), because those in STEM may be more likely to work remotely.
+
+## Exercise 12. Estimate the association of age on travel time (traveltime=β0+β1⋅age+B′X+ϵ), adjusted for other covariates (as notated by the vector B′X). Save this as m1
+
+
+
+```{r}
+
+m1 <- lm(TRANTIME ~ AGE + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+
+summary(m1)
+```
+
+## Exercise 13. Interpret the coefficient for age in a sentence.
+
+For every additional year in age, the average commute time is predicted to decrease by 0.02 minutes, allowing for simultaneous changes in sex, new children, mobility issues, and whether or not the job is STEM-related.
+
+## Exercise 14. Test whether the association between age and travel time (adjusted for other covariates as in the model above) varies by race race_factor. Save this model as m2
+
+```{r}
+
+m2 <- lm(TRANTIME ~ AGE + race_factor + AGE*race_factor + newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+
+summary(m2)
+```
+
+## Exercise 15. Interpret the coefficient for age in a sentence.
+
+For every additional year in age, the average commute time is predicted to decrease by 0.04 minutes, allowing for simultaneous changes in race, the interaction between race and age, sex, new children, mobility issues, and whether or not the job is STEM-related. The relationship between age and commute time is shown to vary significantly across race (p = 0.000275, \alpha)
+
+## Exercise 16. What is the magnitude of the association between age and travel time for people of white race in your sample?
+
+The magnitude of the association is the coefficient for age, -0.059233, because the white race is the reference group for race. This means that for white individuals, the model predicts that for each year older the person is, their travel time will decrease by 0.059 minutes on average, adjusting for the other confounding variables.
+
+## Exercise 17. Use a nested F-test to compare this model to the model above without the interaction term. Interpret what you find in the context of this real world data example.
+
+```{r}
+anova(m1,m2)
+```
+
+$$H_0:\beta_2=\beta_3=0$$
+
+$$H_A:\beta_i \ne 0$$
+
+The ANOVA's p-value is <2.2e-16, indicating that the second model including the interaction term between age and race describes significantly more variation in commute time than the model excluding it.
+
+## Exercise 18. Build your model, and save it as m3.
+
+```{r}
+usa_data2 <- usa_data2 %>% 
+  mutate(race_factor_simple = ifelse(race_factor == "White", "white", "non-white"))
+m3<-lm(TRANTIME ~ AGE + race_factor_simple + AGE * race_factor_simple +  newchild_factor + diffmob_factor + stem_factor, data = usa_data2)
+summary(m3)
+```
+
+## Exercise 19. Describe your process for how you chose this model. What did you define as “best”? Consider all of the ways we have discussed what a “good” model is.
+
+We chose this model because the addition of the interaction term explained significantly more variation in commute time, as shown by the nested F-test. However, many of the individual categories for race ended up being insignificant. We therefore decided to collapse the categories into broader groups of "White" vs. "Non-white", resulting in an insignificant p-value for race, but a significant p-value of 7.76e-05 for the interaction term between race and age.
+
+## Exercise 20. What are the limitations of this model?
+
+   There are other possible confounding variables that we didn't account for. Since we haven't tested the regression analysis, we are not sure that every explanatory variables have a linear relationship to the travel time. 
+
+## Exercise 21. Use the code below to generate a formatted table of your regression model output. Note that you’ll need to add in results="asis" in the beginning of the R code chunk (i.e., {r, message=FALSE, results="asis"}) to get the table output correctly.
+
+```{r, message=FALSE, results="asis"}
+library(stargazer)
+stargazer(m1,m2,m3, type="html")
+```
+
+## Exercise 22.Use the code below to generate a figure depicting the second model.
+
+```{r}
+#calculating the different intercepts
+intercepts <- c(coef(m2)["(Intercept)"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorBlack/African American/Negro"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorAmerican Indian or Alaska Native"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorChinese"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorJapanese"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorOther Asian or Pacific Islander"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorOther race, nec"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorTwo major races"],
+                coef(m2)["(Intercept)"] + coef(m2)["race_factorThree or more major races"])
+
+
+
+slopes <- c(coef(m2)["AGE"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorBlack/African American/Negro"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorAmerican Indian or Alaska Native"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorChinese"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorJapanese"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorOther Asian or Pacific Islander"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorOther race, nec"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorTwo major races"],
+                coef(m2)["AGE"] + coef(m2)["AGE:race_factorThree or more major races"])
+
+#putting these into a new data frame with the slope and transmission indicator variable
+usadata.df <- data.frame(intercepts = intercepts,
+                       slopes = slopes,
+                       Race = levels(usa_data2$race_factor))
+#making the plot
+usaplot1<- ggplot(usa_data2, aes(x = AGE, y = TRANTIME)) + geom_point(color="grey", alpha = .1) + labs( x= 'Age', y='Commute Time (Minutes)') +
+coord_cartesian(ylim = c(20,30)) + 
+  geom_abline(aes(intercept = intercepts, 
+                  slope = slopes, 
+                  color = Race), data = usadata.df)
+usaplot1
+```
+
+## Exercise 23. Specify different coordinates for the y-axis to start and end (coord_cartesian) to zoom in on the pattern.
+The answer is shown above.
+
+(completed above)
+
+## Exercise 24. How does this pattern explain your explanation of these patterns from the model output above? Explain in a paragraph of 3-5 sentences.
+
+This plot supports the result of our nested F-test for model 1 and model 2. Our test showed that model 2, which has the interaction term between race_factor and age, explains significantly more variation than the model that does not include this interaction term. The significance of the interaction term indicates that the slopes of the regression lines for each race group are significantly different, i.e., not parallel, and this is evident from the graph.
