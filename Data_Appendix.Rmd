@@ -1,7 +1,7 @@
 ---
 title: "Data Appendix"
 author: "Clara Li and Rose Porta"
-date: "2/28/2020"
+date: "04/08/2020"
 output: html_document
 ---
 
@@ -10,7 +10,7 @@ library(mosaic)
 library(tidyverse)
 ```
 
-
+# Loading Data
 ```{r}
 # NOTE: To load data, you must download both the extract's data and the DDI
 # and also set the working directory to the folder with these files (or change the path below).
@@ -19,6 +19,7 @@ ddi <- read_ipums_ddi("nhis_00003.xml")
 data <- read_ipums_micro(ddi)
 
 ```
+# Initial Data Wrangling
 ```{r}
 # Create activity level variable and filter out non-applicable values
 data <- data %>% 
@@ -45,32 +46,123 @@ data <- data %>%
 
 ```
 
-```{r}
-str(data)
-```
+# Variable Analysis
 
 ```{r}
 # Look at distributions of variables
 favstats(~WEIGHT, data = data)
+```
+The minimum weight is 101 pounds and the maximum is 298. This makes sense because we filtered out the bottom coded (100 pounds or less) and top-coded weights (299 pounds or more) because these extreme values are not necessary to our analysis, and they represent categories of weights so it may skew our analysis if we included them as numberic values. There are no missing values, which is ideal. 
+
+```{r}
 favstats(~HRSLEEP, data = data)
+```
+The minimum value for hours of sleep is 1, and the maximum is 20. These both seem like very extreme values, but Q1 is 6 and Q3 is 8, which indicates that most individuals get between 6 and 8 hours of sleep, which makes sense. There are no missing values, which is ideal.
+
+```{r}
 favstats(~AGE, data = data)
+```
+The minimum age is 18 years and the maximum is 85 years. This makes sense because we filtered out all ages under 18 years because our analysis focuses on adults, and the age 85 represents all adults 85 years or older based on the IPUMS coding. There are no missing values, which is ideal.
+
+```{r}
 favstats(~BMI, data = data)
+```
+
+The minimum BMI is 15.96 and the maximum is 53.3. Both of these values makes sense, and there are no missing values. 
+
+```{r}
 favstats(~STRONGFWK, data = data)
+```
+
+```{r}
 favstats(~MOD10FWK, data = data)
+```
+
+```{r}
 favstats(~VIG10FWK, data = data)
+```
+For each of the 3 above variables that we used to create our activity_score variable, the minimum is 1 and the maximum is 95. The minimum makes sense, but it seems very extreme and almost impossible for someone to exercise 95 times per week. There are no missing values.
+
+```{r}
 favstats(~activity_score, data = data)
+```
+
+We created the activity_score variable using the Oncology Nursing Society formula Weekly leisure activity score = (9 × Strenuous) + (5 × Moderate) + (3 × Light) from the Godin Leisure-Time Exercise Questionnaire. We substituted strength exercise for light exercise due to the availability of the IPUMS data, and we think strength training is analagous to light exercise for the purposes of our analysis. Each of the 3 variables used to create this are measured in number of times per week. The minimum value is 17 and the maximum is 1615. We are not sure exactly how to make sense of these numbers, but we are assuming that a higher score means a higher overall activity level. There are no missing values. 
+
+```{r}
 tally(~sex, data = data)
+```
+The number of females and males is roughly equal (with slighly more females), which makes sense.
+
+```{r}
 tally(~INCFAM07ON, data = data)
+```
+
+Each category corresponds to a family income-level category, with 10 being the lowest category and 24 being the highest. We thought it was necessary to collapse the categories into low, middle, and high income in order to avoid over-complicating our analysis. We noticed that there are very few people in the lowest category, but the greatest number of people in the second-lowest. We also noticed that there were generally fewer people in the middle 3 categories than in the others. Based on this distribution, we decided to combine the two lowest categories into the low income category, the 3 middle categories into the middle income category, and the two highest categories into the high income category. 
+
+```{r}
 tally(~RACEA, data = data)
+```
+
+Each category code corresponds to a race. We noticed that the vast majority of individuals are white (category 100). 
+
+```{r}
 tally(~HEALTH, data = data)
+```
+
+1 corresponds to very good health and 5 corresponds to very poor health.We noticed that most people are in good or excellent health, and fewer people are in poor health. In order to simplify our analysis, we decided to collapse health into a binary variable: good health versus poor health. We combined the 1, 2, and 3 categories into good health (because the middle (3) category was coded in IPUMS as "good"), and the other two into poor health.
+
+```{r}
 tally(~WORFREQ, data = data)
 ```
+1 corresponds to the highest worry frequency (daily), and 5 corresponds to the lowest. We noticed that there are fewer people who worry a lot, and more who do not report worrying a lot. We think we will need to collapse some of the categories, but since it is not obvious from the tally which ones to combine, we will look at a faceted scatter plot using worry frequency as the explanatory and weight as the response in order to see if particular categories show particularly strong associations with weight. 
+
+# Additional Data Wrangling
+
 ```{r}
 # Collapse categorical variables
 data <- data %>% 
   mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11",          "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "12" |            INCFAM07ON == "", "middle_income", "high_income"))) %>% 
   mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH ==          "3", "good", "poor")) %>% 
   select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
-         family_income, health_binary)
+         family_income, health_binary, WORFREQ)
+```
+
+# Structure and Names
+
+```{r}
+str(data, give.attr = FALSE)
+```
+
+After some initial data wrangling, our data set has 9 variables and 19925 variables. The variables are:
+
+1. WEIGHT is a number indicating the person's weight in pounds
+2. HRSLEEP is an integer indicating self-reported number of hours of sleep per night an individual gets.
+3. AGE is a number indicating the person's age in years
+4. BMI is a number indicating the person's BMI
+5. activity_score is a variable we creating, and is a number that represents a person's activity level.
+6. sex is a character that indicates whether an individual's sex is Male or Female
+7. RACEA is an integer that gives a code that corresponds to an individual's race category
+8. family_income is a character that gives the income group of an individual(high, middle, or low).
+9. health_binary is a character that indicates whether and individual's health is "good" or "poor"
+10. WORFREQ is an integer that corresponds to a category (1-5) for how often an individual worries, 1 being daily and 5 being never.
+
+# Vizualization
+
+```{r}
+# Create scatter plot of weight versus hours of sleep
+ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+```{r}
+# Facet scatterplot by worry frequency
+ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  facet_wrap(~WORFREQ) +
+  geom_smooth(method = lm, se = FALSE)
 ```
 

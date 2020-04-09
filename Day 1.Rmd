@@ -2,7 +2,7 @@
 title: "Day 2"
 author: "Rose Porta, Shirley Zhang, Clara Li"
 date: "3/11/2020"
-output: pdf_document
+output: pdf document
 ---
 ```{r include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 # Some customization to format the file, bring in the data you need.  Do not alter.
