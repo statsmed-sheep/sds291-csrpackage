@@ -6,6 +6,7 @@ output: html_document
 ---
 
 ```{r}
+library(base)
 library(mosaic)
 library(tidyverse)
 ```
@@ -43,10 +44,10 @@ data <- data %>%
          WEIGHT != "274", WEIGHT != "299", WEIGHT != "996", 
          WEIGHT != "997", WEIGHT != "998", WEIGHT != "999") %>% 
   mutate(sex = ifelse(SEX == "1" , "Male", "Female")) %>% 
-  mutate(RACEA = as_factor(RACEA),
-         INCFAM07ON = as_factor(INCFAM07ON),
-         HEALTH = as_factor(HEALTH),
-         WORFREQ = as_factor(WORFREQ))
+  mutate(RACEA = droplevels(as_factor(RACEA)),
+         INCFAM07ON = droplevels(as_factor(INCFAM07ON)),
+         HEALTH = droplevels(as_factor(HEALTH)),
+         WORFREQ = droplevels(as_factor(WORFREQ)))
 
 ```
 
