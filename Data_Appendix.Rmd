@@ -42,7 +42,8 @@ data <- data %>%
          WEIGHT != "000", WEIGHT != "100", WEIGHT != "126", 
          WEIGHT != "274", WEIGHT != "299", WEIGHT != "996", 
          WEIGHT != "997", WEIGHT != "998", WEIGHT != "999") %>% 
-  mutate(sex = ifelse(SEX == "1" , "Male", "Female"))
+  mutate(sex = ifelse(SEX == "1" , "Male", "Female")) %>% 
+  mutate(RACEA = as_factor(RACEA))
 
 ```
 
@@ -122,8 +123,8 @@ tally(~WORFREQ, data = data)
 ```{r}
 # Collapse categorical variables
 data <- data %>% 
-  mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11",          "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "12" |            INCFAM07ON == "", "middle_income", "high_income"))) %>% 
-  mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH ==          "3", "good", "poor")) %>% 
+  mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11", "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "12" | INCFAM07ON == "", "middle_income", "high_income"))) %>% 
+  mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH == "3", "good", "poor")) %>% 
   select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
          family_income, health_binary, WORFREQ)
 ```
@@ -134,13 +135,13 @@ data <- data %>%
 str(data, give.attr = FALSE)
 ```
 
-After some initial data wrangling, our data set has 9 variables and 19925 variables. The variables are:
+After some initial data wrangling, our data set has 10 variables and 19925 observational units. The variables are:
 
 1. WEIGHT is a number indicating the person's weight in pounds
 2. HRSLEEP is an integer indicating self-reported number of hours of sleep per night an individual gets.
 3. AGE is a number indicating the person's age in years
 4. BMI is a number indicating the person's BMI
-5. activity_score is a variable we creating, and is a number that represents a person's activity level.
+5. activity_score is a variable we created, and is a number that represents a person's activity level.
 6. sex is a character that indicates whether an individual's sex is Male or Female
 7. RACEA is an integer that gives a code that corresponds to an individual's race category
 8. family_income is a character that gives the income group of an individual(high, middle, or low).
@@ -157,6 +158,8 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_smooth(method = lm, se = FALSE)
 ```
 
+  Although the strength and magnitude of the fitted line are weak, the slope is negative, indicating an inverse relationship between hours of sleep and weight in pounds as we hypothesized.
+
 ```{r}
 # Facet scatterplot by worry frequency
 ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
@@ -164,5 +167,29 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_jitter() +
   facet_wrap(~WORFREQ) +
   geom_smooth(method = lm, se = FALSE)
+```
+
+For all worry frequencies except WORFREQ = 1 (daily), the relationship between hours of sleep and weight remains negative. For observational units who worried daily, however, the relationship between HRSLEEP and WEIGHT appears slightly positive. This hints at a possibly significant interaction between HRSLEEP/WEIGHT and a binary WORFREQ variable with 1 coded as worrying daily and 0 coded as worrying less than daily.
+
+```{r}
+# Facet scatterplot by race
+ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  facet_wrap(~RACEA) +
+  geom_smooth(method = lm, se = FALSE)
+
+# Have questions here -- include HRSLEEP*WORFREQ?
+m1 <- lm(WEIGHT ~ HRSLEEP + WORFREQ + HRSLEEP*WORFREQ + RACEA + HRSLEEP*RACEA + AGE + BMI + activity_score + sex + family_income + health_binary, data = data)
+
+summary(m1)
+```
+
+# Final Data Wrangling
+
+```{r}
+data <- data %>% 
+  mutate(WORFREQ = ifelse(WORFREQ == "1", "1", "0"))
+  # mutate(RACEA = ifelse(RACEA == ))
 ```
 
