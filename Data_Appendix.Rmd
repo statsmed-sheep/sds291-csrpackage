@@ -43,12 +43,7 @@ data <- data %>%
          WEIGHT != "000", WEIGHT != "100", WEIGHT != "126", 
          WEIGHT != "274", WEIGHT != "299", WEIGHT != "996", 
          WEIGHT != "997", WEIGHT != "998", WEIGHT != "999") %>% 
-  mutate(sex = ifelse(SEX == "1" , "Male", "Female")) %>% 
-  mutate(RACEA = droplevels(as_factor(RACEA)),
-         INCFAM07ON = droplevels(as_factor(INCFAM07ON)),
-         HEALTH = droplevels(as_factor(HEALTH)),
-         WORFREQ = droplevels(as_factor(WORFREQ)))
-
+  mutate(sex = ifelse(SEX == "1" , "Male", "Female"))
 ```
 
 # Variable Analysis
@@ -130,7 +125,11 @@ data <- data %>%
   mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11", "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "12" | INCFAM07ON == "", "middle_income", "high_income"))) %>% 
   mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH == "3", "good", "poor")) %>% 
   select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
-         family_income, health_binary, WORFREQ)
+         family_income, health_binary, WORFREQ) %>% 
+  mutate(RACEA = droplevels(as_factor(RACEA)),
+         INCFAM07ON = droplevels(as_factor(INCFAM07ON)),
+         HEALTH = droplevels(as_factor(HEALTH)),
+         WORFREQ = droplevels(as_factor(WORFREQ)))
 ```
 
 # Structure and Names
