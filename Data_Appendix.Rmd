@@ -127,8 +127,6 @@ data <- data %>%
   select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
          family_income, health_binary, WORFREQ) %>% 
   mutate(RACEA = droplevels(as_factor(RACEA)),
-         INCFAM07ON = droplevels(as_factor(INCFAM07ON)),
-         HEALTH = droplevels(as_factor(HEALTH)),
          WORFREQ = droplevels(as_factor(WORFREQ)))
 ```
 
