@@ -2,7 +2,9 @@
 title: "Day 2"
 author: "Rose Porta, Shirley Zhang, Clara Li"
 date: "3/11/2020"
-output: pdf document
+output:
+  html_document:
+    df_print: paged
 ---
 ```{r include=FALSE, warning=FALSE, message=FALSE, error=FALSE}
 # Some customization to format the file, bring in the data you need.  Do not alter.
@@ -212,7 +214,7 @@ We chose this model because the addition of the interaction term explained signi
 
 ```{r, message=FALSE, results="asis"}
 library(stargazer)
-stargazer(m1,m2,m3, type="text")
+stargazer(m1,m2,m3, type="html")
 ```
 
 ## Exercise 22.Use the code below to generate a figure depicting the second model.
