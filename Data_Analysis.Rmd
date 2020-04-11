@@ -15,8 +15,8 @@ library(tidyverse)
 # Model
 
 ```{r}
-model <- lm(WEIGHT ~ HRSLEEP + worfreq_binary + HRSLEEP*worfreq_binary + AGE + BMI + activity_score + 
-            SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na)
+model <- lm(WEIGHT ~ HRSLEEP + worfreq_binary +  + activity_score + 
+            SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na, data = data)
 
 summary(model)
 ```
