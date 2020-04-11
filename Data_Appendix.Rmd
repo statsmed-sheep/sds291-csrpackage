@@ -217,3 +217,8 @@ ggplot(data, aes(x = worfreq_binary, y = HRSLEEP)) +
 ```
 
 Based on the scatterplots of binary worry frequency vs hours of sleep, there does not appear to be a significant relationship between the two, and so we do not suspect collinearity between our two explanatory variables.
+
+```{r}
+write.csv(data, "filename.csv")
+```
+
