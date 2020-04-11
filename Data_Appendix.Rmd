@@ -221,4 +221,3 @@ Based on the scatterplots of binary worry frequency vs hours of sleep, there doe
 ```{r}
 write.csv(data, "filename.csv")
 ```
-
