@@ -6,6 +6,18 @@ output: html_document
 ---
 
 ```{r}
+# bringing in data from appendix
 data <- read.csv("filename.csv")
+
+library(tidyverse)
+```
+
+# Model
+
+```{r}
+model <- lm(WEIGHT ~ HRSLEEP + worfreq_binary + HRSLEEP*worfreq_binary + AGE + BMI + activity_score + 
+            SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na)
+
+summary(model)
 ```
 
