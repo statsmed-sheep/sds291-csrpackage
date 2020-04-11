@@ -1,0 +1,11 @@
+---
+title: "Data Analysis & Modelling"
+author: "Rose Porta and Clara Li"
+date: "4/11/2020"
+output: html_document
+---
+
+```{r}
+data <- read.csv("filename.csv")
+```
+
