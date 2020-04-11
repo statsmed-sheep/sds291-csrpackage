@@ -12,12 +12,25 @@ data <- read.csv("filename.csv")
 library(tidyverse)
 ```
 
-# Model
+# Model - Initial Attempt
 
 ```{r}
-model <- lm(WEIGHT ~ HRSLEEP + worfreq_binary +  + activity_score + 
-            SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na, data = data)
+model <- lm(data = data, WEIGHT ~ HRSLEEP*worfreq_binary + AGE + BMI + activity_score + 
+            SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na)
 
 summary(model)
 ```
 
+Our first attempt at fitting a multiple regression model included an interaction between hours of sleep and worry frequency. Our scatterplots of the relationship between hours of sleep and weight appeared to differ depending on whether the subjects worried daily vs non daily. We also included all confounding variables without transformations or interactions.
+
+At the alpha = 0.1 level, every variable except hours of sleep, worry frequency, and the interaction variable between hours of sleep and worry frequency is significant.
+
+```{r}
+model2 <- lm(data = data, WEIGHT ~ HRSLEEP*worfreq_binary)
+
+summary(model2)
+
+# suggest that previous studies on sleep and weight haven't controlled enough for confounding variables?
+```
+
+Looking at a model that includes only hours of sleep worry frequency, and the interaction between the two, it appears that all 3 variables are significant at the 0.01 level. However, after controlling for the confounding variables they are no longer so.
