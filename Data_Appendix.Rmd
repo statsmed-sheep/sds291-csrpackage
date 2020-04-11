@@ -42,8 +42,7 @@ data <- data %>%
          WORFREQ != "0", WORFREQ != "7", WORFREQ != "8", WORFREQ != "9",
          WEIGHT != "000", WEIGHT != "100", WEIGHT != "126", 
          WEIGHT != "274", WEIGHT != "299", WEIGHT != "996", 
-         WEIGHT != "997", WEIGHT != "998", WEIGHT != "999") %>% 
-  mutate(sex = ifelse(SEX == "1" , "Male", "Female"))
+         WEIGHT != "997", WEIGHT != "998", WEIGHT != "999")
 ```
 
 # Variable Analysis
@@ -122,12 +121,13 @@ tally(~WORFREQ, data = data)
 ```{r}
 # Collapse categorical variables
 data <- data %>% 
-  mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11", "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "21" | INCFAM07ON == "22", "middle_income", "high_income"))) %>% 
-  mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH == "3", "good", "poor")) %>% 
+  # income_low is reference group
+  mutate(income_high = ifelse(INCFAM07ON == "23" |  INCFAM07ON == "24", 1, 0),
+         income_middle = ifelse(INCFAM07ON == "12" | INCFAM07ON == "21" | INCFAM07ON == "22", 1, 0)) %>% 
+  # health_binary = 1 indicates good health
+  mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH == "3", 1, 0)) %>% 
   select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
-         family_income, health_binary, WORFREQ) %>% 
-  mutate(RACEA = droplevels(as_factor(RACEA)),
-         WORFREQ = droplevels(as_factor(WORFREQ)))
+         family_income, health_binary, WORFREQ)
 ```
 
 # Structure and Names
@@ -179,18 +179,41 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_jitter() +
   facet_wrap(~RACEA) +
   geom_smooth(method = lm, se = FALSE)
-
-# Have questions here -- include HRSLEEP*WORFREQ?
-m1 <- lm(WEIGHT ~ HRSLEEP + WORFREQ + HRSLEEP*WORFREQ + RACEA + HRSLEEP*RACEA + AGE + BMI + activity_score + sex + family_income + health_binary, data = data)
-
-summary(m1)
 ```
 
 # Final Data Wrangling
 
 ```{r}
 data <- data %>% 
-  mutate(WORFREQ = ifelse(WORFREQ == "1", "1", "0"))
-  # mutate(RACEA = ifelse(RACEA == ))
+  mutate(worfreq_binary = ifelse(WORFREQ == 1, 1, 0)) %>% 
+  mutate(race_Asian = ifelse(RACEA == "411" | RACEA == "412" | RACEA == "416" |
+                          RACEA == "434", 1, 0),
+         race_black = ifelse(RACEA == "200", 1, 0),
+         race_na = ifelse(RACEA == "310", 1, 0)) %>% 
+  filter(RACEA != "580")
 ```
 
+```{r}
+# Facet scatterplot by worry frequency binary
+ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  facet_wrap(~worfreq_binary) +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+Based on the previous scatterplots faceted by race, we decided to combine Asian ethnicities and keep Alaskan Native or American Indians separate. We also recoded each categorical variable as a binary variable.
+
+After recording worry frequency as a binary variable, we re-evaluated the relationship between sleep and weight faceted by daily vs non-daily worry frequency. We see a fairly clear difference in the two slopes of the two lines, suggesting the need for an interaction term between worry frequency and sleep in our multiple regression model.
+
+# Checking Collinearity between Sleep and Worry Frequency
+
+```{r}
+# Facet scatterplot by worry frequency
+ggplot(data, aes(x = worfreq_binary, y = HRSLEEP)) +
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+Based on the scatterplots of binary worry frequency vs hours of sleep, there does not appear to be a significant relationship between the two, and so we do not suspect collinearity between our two explanatory variables.
