@@ -34,3 +34,11 @@ summary(model2)
 ```
 
 Looking at a model that includes only hours of sleep worry frequency, and the interaction between the two, it appears that all 3 variables are significant at the 0.01 level. However, after controlling for the confounding variables they are no longer so.
+
+```{r}
+# Fit model with BMI as response
+model <- lm(data = data, BMI ~ HRSLEEP*worfreq_binary + AGE + activity_score + SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na)
+
+summary(model)
+```
+
