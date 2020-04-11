@@ -42,7 +42,8 @@ data <- data %>%
          WORFREQ != "0", WORFREQ != "7", WORFREQ != "8", WORFREQ != "9",
          WEIGHT != "000", WEIGHT != "100", WEIGHT != "126", 
          WEIGHT != "274", WEIGHT != "299", WEIGHT != "996", 
-         WEIGHT != "997", WEIGHT != "998", WEIGHT != "999")
+         WEIGHT != "997", WEIGHT != "998", WEIGHT != "999") %>% 
+  mutate(SEX = ifelse(SEX == 1, 0, 1))
 ```
 
 # Variable Analysis
@@ -89,7 +90,7 @@ favstats(~activity_score, data = data)
 We created the activity_score variable using the Oncology Nursing Society formula Weekly leisure activity score = (9 × Strenuous) + (5 × Moderate) + (3 × Light) from the Godin Leisure-Time Exercise Questionnaire. We substituted strength exercise for light exercise due to the availability of the IPUMS data, and we think strength training is analagous to light exercise for the purposes of our analysis. Each of the 3 variables used to create this are measured in number of times per week. The minimum value is 17 and the maximum is 1615. We are not sure exactly how to make sense of these numbers, but we are assuming that a higher score means a higher overall activity level. There are no missing values. 
 
 ```{r}
-tally(~sex, data = data)
+tally(~SEX, data = data)
 ```
 The number of females and males is roughly equal (with slighly more females), which makes sense.
 
@@ -126,8 +127,8 @@ data <- data %>%
          income_middle = ifelse(INCFAM07ON == "12" | INCFAM07ON == "21" | INCFAM07ON == "22", 1, 0)) %>% 
   # health_binary = 1 indicates good health
   mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH == "3", 1, 0)) %>% 
-  select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
-         family_income, health_binary, WORFREQ)
+  select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, SEX, RACEA, 
+         income_high, income_middle, health_binary, WORFREQ)
 ```
 
 # Structure and Names
@@ -136,18 +137,19 @@ data <- data %>%
 str(data, give.attr = FALSE)
 ```
 
-After some initial data wrangling, our data set has 10 variables and 19925 observational units. The variables are:
+After some initial data wrangling, our data set has 11 variables and 19925 observational units. The variables are:
 
 1. WEIGHT is a number indicating the person's weight in pounds
 2. HRSLEEP is an integer indicating self-reported number of hours of sleep per night an individual gets.
 3. AGE is a number indicating the person's age in years
 4. BMI is a number indicating the person's BMI
 5. activity_score is a variable we created, and is a number that represents a person's activity level.
-6. sex is a character that indicates whether an individual's sex is Male or Female
+6. SEX is a number that indicates whether an individual is male(0) or female(1)
 7. RACEA is an integer that gives a code that corresponds to an individual's race category
-8. family_income is a character that gives the income group of an individual(high, middle, or low).
-9. health_binary is a character that indicates whether and individual's health is "good" or "poor"
-10. WORFREQ is an integer that corresponds to a category (1-5) for how often an individual worries, 1 being daily and 5 being never.
+8. income_high is a number that indicates if an individual is high income based on our grouping (1) or not high-income (0).
+9. income_middle is a number that indicates if an individual is middle income based on our grouping (1) or not middle-income (0).
+10. health_binary is a character that indicates whether and individual's health is "good" or "poor"
+11. WORFREQ is an integer that corresponds to a category (1-5) for how often an individual worries, 1 being daily and 5 being never.
 
 # Vizualization
 
