@@ -122,7 +122,7 @@ tally(~WORFREQ, data = data)
 ```{r}
 # Collapse categorical variables
 data <- data %>% 
-  mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11", "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "12" | INCFAM07ON == "", "middle_income", "high_income"))) %>% 
+  mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11", "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "21" | INCFAM07ON == "22", "middle_income", "high_income"))) %>% 
   mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH == "3", "good", "poor")) %>% 
   select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
          family_income, health_binary, WORFREQ) %>% 
