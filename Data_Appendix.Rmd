@@ -223,3 +223,22 @@ Based on the scatterplots of binary worry frequency vs hours of sleep, there doe
 ```{r}
 write.csv(data, "filename.csv")
 ```
+
+# Scatterplots with BMI as response
+
+```{r}
+# Create scatter plot of BMI versus hours of sleep
+ggplot(data, aes(x = HRSLEEP, y = BMI))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+```{r}
+# Facet scatterplot by worry frequency
+ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  facet_wrap(~WORFREQ) +
+  geom_smooth(method = lm, se = FALSE)
+```
