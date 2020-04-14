@@ -110,7 +110,7 @@ Each category code corresponds to a race. We noticed that the vast majority of i
 tally(~HEALTH, data = data)
 ```
 
-1 corresponds to very good health and 5 corresponds to very poor health.We noticed that most people are in good or excellent health, and fewer people are in poor health. In order to simplify our analysis, we decided to collapse health into a binary variable: good health versus poor health. We combined the 1, 2, and 3 categories into good health (because the middle (3) category was coded in IPUMS as "good"), and the other two into poor health.
+1 corresponds to very good health and 5 corresponds to very poor health. We noticed that most people are in good or excellent health, and fewer people are in poor health. In order to simplify our analysis, we decided to collapse health into a binary variable: good health versus poor health. We combined the 1, 2, and 3 categories into good health (because the middle (3) category was coded in IPUMS as "good"), and the other two into poor health.
 
 ```{r}
 tally(~WORFREQ, data = data)
@@ -151,7 +151,7 @@ After some initial data wrangling, our data set has 11 variables and 19925 obser
 10. health_binary is a character that indicates whether and individual's health is "good" or "poor"
 11. WORFREQ is an integer that corresponds to a category (1-5) for how often an individual worries, 1 being daily and 5 being never.
 
-# Vizualization
+# Visualization
 
 ```{r}
 # Create scatter plot of weight versus hours of sleep
@@ -161,7 +161,7 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_smooth(method = lm, se = FALSE)
 ```
 
-  Although the strength and magnitude of the fitted line are weak, the slope is negative, indicating an inverse relationship between hours of sleep and weight in pounds as we hypothesized.
+Although the strength and magnitude of the fitted line are weak, the slope is negative, indicating an inverse relationship between hours of sleep and weight in pounds as we hypothesized.
 
 ```{r}
 # Facet scatterplot by worry frequency
@@ -221,5 +221,6 @@ ggplot(data, aes(x = worfreq_binary, y = HRSLEEP)) +
 Based on the scatterplots of binary worry frequency vs hours of sleep, there does not appear to be a significant relationship between the two, and so we do not suspect collinearity between our two explanatory variables.
 
 ```{r}
+# Exporting wranled dataset for data analysis use
 write.csv(data, "filename.csv")
 ```
