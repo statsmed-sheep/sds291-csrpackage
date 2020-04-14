@@ -164,23 +164,40 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
 Although the strength and magnitude of the fitted line are weak, the slope is negative, indicating an inverse relationship between hours of sleep and weight in pounds as we hypothesized.
 
 ```{r}
+worfreq_labels <- c(
+  "1" = 'Daily',
+  "2" = 'Weekly',
+  "3" = 'Monthly',
+  "4" = 'A few times a year',
+  "5" = 'Never'
+)
+
 # Facet scatterplot by worry frequency
 ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_point(alpha = 0.1) + 
   geom_jitter() +
-  facet_wrap(~WORFREQ) +
-  geom_smooth(method = lm, se = FALSE)
+  geom_smooth(method = lm, se = FALSE) +
+  facet_grid(cols=vars(WORFREQ), labeller=labeller(WORFREQ = worfreq_labels))
 ```
 
 For all worry frequencies except WORFREQ = 1 (daily), the relationship between hours of sleep and weight remains negative. For observational units who worried daily, however, the relationship between HRSLEEP and WEIGHT appears slightly positive. This hints at a possibly significant interaction between HRSLEEP/WEIGHT and a binary WORFREQ variable with 1 coded as worrying daily and 0 coded as worrying less than daily.
 
 ```{r}
+race_labels <- c("100" = 'White',
+              "200" = 'Black',
+              "310" = 'Native A.',
+              "411" = 'Chinese',
+              "412" = 'Filipino',
+              "416" = 'Asian Indian',
+              "434" = 'Other Asian',
+              "580" = 'NR')
+
 # Facet scatterplot by race
 ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_point(alpha = 0.1) + 
   geom_jitter() +
-  facet_wrap(~RACEA) +
-  geom_smooth(method = lm, se = FALSE)
+  geom_smooth(method = lm, se = FALSE) +
+  facet_grid(col=vars(RACEA), labeller=labeller(RACEA = race_labels))
 ```
 
 # Final Data Wrangling
@@ -188,7 +205,7 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
 ```{r}
 data <- data %>% 
   mutate(worfreq_binary = ifelse(WORFREQ == 1, 1, 0)) %>% 
-  mutate(race_Asian = ifelse(RACEA == "411" | RACEA == "412" | RACEA == "416" |
+  mutate(race_asian = ifelse(RACEA == "411" | RACEA == "412" | RACEA == "416" |
                           RACEA == "434", 1, 0),
          race_black = ifelse(RACEA == "200", 1, 0),
          race_na = ifelse(RACEA == "310", 1, 0)) %>% 
@@ -204,14 +221,13 @@ ggplot(data, aes(x = HRSLEEP, y = WEIGHT))+
   geom_smooth(method = lm, se = FALSE)
 ```
 
-Based on the previous scatterplots faceted by race, we decided to combine Asian ethnicities and keep Alaskan Native or American Indians separate. We also recoded each categorical variable as a binary variable.
+Based on the previous scatterplots faceted by race, we decided to combine Asian ethnicities and keep Alaskan Native or American Indians separate. NR stands for primary race not releasable. We also recoded each categorical variable as a binary variable.
 
 After recording worry frequency as a binary variable, we re-evaluated the relationship between sleep and weight faceted by daily vs non-daily worry frequency. We see a fairly clear difference in the two slopes of the two lines, suggesting the need for an interaction term between worry frequency and sleep in our multiple regression model.
 
 # Checking Collinearity between Sleep and Worry Frequency
 
 ```{r}
-# Facet scatterplot by worry frequency
 ggplot(data, aes(x = worfreq_binary, y = HRSLEEP)) +
   geom_point(alpha = 0.1) + 
   geom_jitter() +
