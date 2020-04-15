@@ -37,7 +37,7 @@ Looking at a model that includes only hours of sleep worry frequency, and the in
 
 ```{r}
 # Fit model with BMI as response
-model <- lm(data = data, BMI ~ HRSLEEP*worfreq_binary + AGE + activity_score + SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na)
+model <- lm(data = data, BMI ~ HRSLEEP*worfreq_binary + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
 
 summary(model)
 ```
