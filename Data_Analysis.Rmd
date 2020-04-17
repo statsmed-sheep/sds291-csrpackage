@@ -10,35 +10,103 @@ output: html_document
 data <- read.csv("filename.csv")
 
 library(tidyverse)
+library(broom)
 ```
 
-# Model - Initial Attempt
 
 ```{r}
-model <- lm(data = data, WEIGHT ~ HRSLEEP*worfreq_binary + AGE + BMI + activity_score + 
-            SEX + income_high + income_middle + health_binary + race_Asian + race_black + race_na)
+# Fit full model with BMI as response (secondary hypothesis)
+model_full <- lm(data = data, BMI ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
 
-summary(model)
+summary(model_full)
 ```
+Multiple Regression Model: 
 
-Our first attempt at fitting a multiple regression model included an interaction between hours of sleep and worry frequency. Our scatterplots of the relationship between hours of sleep and weight appeared to differ depending on whether the subjects worried daily vs non daily. We also included all confounding variables without transformations or interactions.
+$BMI = \beta_0 + \beta_1\cdot HRSLEEP + \beta_2\cdot worfreq\_binary + \beta_3\cdot HRSLEEP\cdot worfreq\_binary + \beta_4\cdot log(AGE) + \beta_5\cdot activity\_score + \beta_6\cdot SEX + \beta_7\cdot income\_high + \beta_8\cdot income\_middle + \beta_9\cdot health\_binary + \beta_10\cdot race\_asian + \beta_11\cdot race\_black + \beta_12\cdot race\_na$
 
-At the alpha = 0.1 level, every variable except hours of sleep, worry frequency, and the interaction variable between hours of sleep and worry frequency is significant.
+Fitted Model: 
+
+$\widehat{BMI} = \hat{\beta_0} + \hat{\beta_1}\cdot HRSLEEP + \hat{\beta_2}\cdot worfreq\_binary + \hat{\beta_3}\cdot HRSLEEP\cdot worfreq\_binary + \hat{\beta_4}\cdot log(AGE) + \hat{\beta_5}\cdot activity\_score + \hat{\beta_6}\cdot SEX + \hat{\beta_7}\cdot income\_high + \hat{\beta_8}\cdot income\_middle + \hat{\beta_9}\cdot health\_binary + \hat{\beta_10}\cdot race\_asian + \hat{\beta_11}\cdot race\_black + \hat{\beta_12}\cdot race\_na$
+
+$\widehat{BMI} = 27.97 + -0.1976\cdot HRSLEEP + -0.9466\cdot worfreq\_binary + 0.1464e\cdot HRSLEEP\cdot worfreq\_binary + 0.4386\cdot log(AGE) + 0.0009299\cdot activity\_score + -0.4526\cdot SEX + -0.003884\cdot income\_high + 0.6204\cdot income\_middle + -1.389\cdot health\_binary + -2.253\cdot race\_asian + 1.099\cdot race\_black + 1.466\cdot race\_na$
+
+# Check Regression Assumptions
+
+## Linearity
+
+Since our sample size is so large, it is difficult to determine from the scatterplots whether or not the relationship is linear, but there is no clear non-linear pattern, so the linearity assumption is reasonable.
+
+```{r, warning = FALSE, message = FALSE}
+# Create scatter plot of BMI versus hours of sleep
+ggplot(data, aes(x = HRSLEEP, y = BMI))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  geom_smooth(method = lm, se = FALSE)
+```
+```{r}
+# Facet scatterplot by worry frequency binary
+ggplot(data, aes(x = HRSLEEP, y = BMI))+
+  geom_point(alpha = 0.1) + 
+  geom_jitter() +
+  facet_wrap(~worfreq_binary) +
+  geom_smooth(method = lm, se = FALSE)
+```
+## Constant Variance
+
+The residuals versus fitted values plot below shows a clear fan shape, with much higher variability at higher fitted values than lower ones, so constant variance is violated. 
 
 ```{r}
-model2 <- lm(data = data, WEIGHT ~ HRSLEEP*worfreq_binary)
+# Code from Rose's Exam 1
+# Creates table of residuals stored in m1_data
+m1_data<-augment(model_full)
 
-summary(model2)
+# Creates residuals vs. fitted plot
+ggplot(data = m1_data, aes(x = .fitted, y = .resid))+
+  geom_point()+
+  labs(title = "Residuals Versus Fitted Plot")
 
-# suggest that previous studies on sleep and weight haven't controlled enough for confounding variables?
 ```
+## Normality
 
-Looking at a model that includes only hours of sleep worry frequency, and the interaction between the two, it appears that all 3 variables are significant at the 0.01 level. However, after controlling for the confounding variables they are no longer so.
+The Normal Q-Q plot is clearly curved, and the histogram of residuals shows a clearly skewed distribution, so the normality assumption is violated. 
+
+```{r, message = FALSE}
+# Generates Q-Q Plot
+ggplot(data = m1_data, aes(sample = .resid))+
+  geom_qq()+
+  labs(title = "Q-Q Plot")
+
+# Generates histogram of residuals
+ggplot(data = m1_data, aes(x = .resid))+
+  geom_histogram()+
+  labs(title = "Histogram of Residuals")
+```
+## Randomness
+
+Our data is based on a random sample, so the randomness assumption is met. 
+
+## Independence
+
+Only one adult from each household was chosen for the survey, so is is reasonable to assume that one sampled individual's BMI would not impact any other sampled individual's BMI, so independence is reasonable. 
+
+# Significance Tests:
+
+## T-test for slope:
+
+
 
 ```{r}
-# Fit model with BMI as response
-model <- lm(data = data, BMI ~ HRSLEEP*worfreq_binary + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
+# Fit nested model (primary hypothesis)
+model_nested <- lm(data = data, BMI ~ HRSLEEP + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
 
-summary(model)
+summary(model_nested)
 ```
+Multiple Regression Model: 
 
+$BMI = \beta_0 + \beta_1\cdot HRSLEEP + \beta_2\cdot log(AGE) + \beta_3\cdot activity\_score + \beta_4\cdot SEX + \beta_5\cdot income\_high + \beta_6\cdot income\_middle + \beta_7\cdot health\_binary + \beta_8\cdot race\_asian + \beta_9\cdot race\_black + \beta_10\cdot race\_na$
+
+Fitted Model: 
+
+$\widehat{BMI} = \hat{\beta_0} + \hat{\beta_1}\cdot HRSLEEP + \hat{\beta_2}\cdot log(AGE) + \hat{\beta_3}\cdot activity\_score + \hat{\beta_4}\cdot SEX + \hat{\beta_5}\cdot income\_high + \hat{\beta_6}\cdot income\_middle + \hat{\beta_7}\cdot health\_binary + \hat{\beta_8}\cdot race\_asian + \hat{\beta_9}\cdot race\_black + \hat{\beta_10}\cdot race\_na$
+
+$\widehat{BMI} = 27.8388875 + -0.1741384\cdot HRSLEEP + 0.4328128\cdot log(AGE) + 0.0009302\cdot activity\_score + -0.4537030\cdot SEX + -0.0024976\cdot income\_high + 0.6205898\cdot income\_middle + -1.3938202\cdot health\_binary + -2.2557291\cdot race\_asian + 1.0970097\cdot race\_black + 1.4601888\cdot race\_na$
