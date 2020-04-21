@@ -16,7 +16,7 @@ library(broom)
 
 ```{r}
 # Fit full model with BMI as response (secondary hypothesis)
-model_full <- lm(data = data, BMI ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
+model_full <- glm(data = data, log(BMI) ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
 
 summary(model_full)
 ```
