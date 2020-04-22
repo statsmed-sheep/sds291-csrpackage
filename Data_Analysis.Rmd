@@ -357,4 +357,4 @@ require(lmtest)
 lrtest(model_logistic)
 ```
 
-The $-2log(L)$ values are -12154 and -11800 for the null model and full logistic model, respectively. This yields a G-statistic of -12154 - (-11800) = -354. Compared to a chi-distribution with 12 degrees of freedom, the p-value is less than 2.2e-16, which is significant at the alpha = 0.05 level. We therefore reject the null hypothesis and conclude that the multiple logistic regression model based on sleep, worry frequency, and the interaction between sleep and worry frequency is effective at explaining the probability of being obese.
+The $-2log(L)$ values are $-2\cdot -12154 = 24308$ and $-2\cdot -11800 = 23600$ for the null model and full logistic model, respectively. This yields a G-statistic of 24308 - (23600) = 708. Compared to a chi-distribution with 12 degrees of freedom, the p-value is less than 2.2e-16, which is significant at the alpha = 0.05 level. We therefore reject the null hypothesis and conclude that the multiple logistic regression model based on sleep, worry frequency, and the interaction between sleep and worry frequency is effective at explaining the probability of being obese.
