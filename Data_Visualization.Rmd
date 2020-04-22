@@ -1,0 +1,132 @@
+---
+title: "Data Visualization"
+author: "Rose Porta"
+date: "4/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# bringing in data from appendix
+data <- read.csv("filename.csv")
+
+library(tidyverse)
+library(broom)
+library(gtools)
+```
+# Linear Model
+
+```{r}
+model_full <- lm(data = data, log(BMI) ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
+
+model_nested <- lm(data = data, log(BMI) ~ HRSLEEP + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
+```
+
+```{r}
+# Create summary tables for linear regression models
+# Code from visualization practice 4/20/20
+preds_1 <- tidy(model_full, conf.int = TRUE) %>%
+    mutate(Model = "M1: WORFREQ Adjusted")
+preds_2 <- tidy(model_nested, conf.int = TRUE) %>%
+    mutate(Model = "M2: Not Adjusted")
+
+predictions <- bind_rows(preds_1, preds_2) 
+
+predictions2 <- predictions %>% 
+  filter(term %in% c("HRSLEEP", "worfreq_binary", "I(HRSLEEP * worfreq_binary)"))
+```
+
+```{r}
+# code from Logistic Regression visualization practice activity 4/20/20
+preds <- augment(model_full) %>%
+  mutate(.fitted = exp(.fitted)) %>% 
+  mutate(lci=`.fitted`-(1.96*`.se.fit`),
+         uci=`.fitted`+(1.96*`.se.fit`)) %>% 
+  rename(predicted_BMI=`.fitted`) %>% 
+  select(HRSLEEP, worfreq_binary, predicted_BMI, lci, uci) %>% 
+  filter(HRSLEEP > 4, HRSLEEP < 11) %>% 
+  group_by(HRSLEEP, worfreq_binary) %>% 
+  summarize(avg_predicted_BMI = mean(predicted_BMI), avg_lci = mean(lci), avg_uci = mean(uci))
+```
+
+```{r}
+ggplot(preds, aes(x = HRSLEEP, y = avg_predicted_BMI)) +
+  geom_point() + 
+  facet_wrap(~worfreq_binary) +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+```{r}
+# code from Logistic Regression visualization practice activity 4/20/20
+preds2 <- augment(model_nested) %>%
+  mutate(.fitted = exp(.fitted)) %>% 
+  mutate(lci=`.fitted`-(1.96*`.se.fit`),
+         uci=`.fitted`+(1.96*`.se.fit`)) %>% 
+  rename(predicted_BMI=`.fitted`) %>% 
+  select(HRSLEEP, predicted_BMI, lci, uci) %>% 
+  filter(HRSLEEP > 4, HRSLEEP < 11) %>% 
+  group_by(HRSLEEP) %>% 
+  summarize(avg_predicted_BMI = mean(predicted_BMI), avg_lci = mean(lci), avg_uci = mean(uci))
+```
+
+```{r}
+# Create plot of average predicted BMI for each level of hours of sleep 5-10
+ggplot(preds2, aes(x = HRSLEEP, y = avg_predicted_BMI)) +
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE)
+```
+
+# Logistic Model
+```{r}
+# Create binary BMI variable -- 1 = obese, 0 = not obese
+data_binary <- data %>% 
+  mutate(BMI_binary = ifelse(BMI >= 30, 1, 0))
+
+# Fit logistic model
+model_logistic <- glm(BMI_binary ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na, family = binomial, data = data_binary)
+
+summary(model_logistic)
+```
+
+```{r}
+# code from Logistic Regression visualization practice activity 4/20/20
+preds <- augment(x=model_logistic, type.predict = "response") %>%
+  mutate(lci=`.fitted`-(1.96*`.se.fit`),
+         uci=`.fitted`+(1.96*`.se.fit`)) %>%
+  rename(prob=`.fitted`)
+
+probs<- preds %>%
+  select(prob,lci,uci, worfreq_binary , HRSLEEP)
+```
+
+```{r}
+# code from Logistic Regression visualizationpractice activity 4/20/20
+Prob_Plot <- probs %>%
+  filter(HRSLEEP %in% c(4, 5, 6, 7, 8, 9, 10)) %>%
+  group_by(HRSLEEP, worfreq_binary) %>%
+  slice(1) %>%
+  ggplot(aes(y = prob, x = HRSLEEP, color = as_factor(worfreq_binary))) +
+        geom_pointrange(aes(ymin = lci, ymax = uci),
+                       position = position_dodge(width = 3),
+                       size = .75) +
+      # Legend label
+       # geom_hline(yintercept = 1.0, linetype = "dotted", size = .5) +
+        #scale_y_log10(breaks = c(0,0.1,0.25,0.5, 1.0, 1.5)) +
+        labs(y = "Probability of Being Classified as Obese", x = "Hours of Sleep per Night") +
+        #coord_flip(ylim = c(0.1, 1.5)) +
+        theme_bw()
+Prob_Plot
+```
+
+```{r}
+# Create table of probabilities based on worry frequency for each number of hours of sleep 4-10
+probs<- preds %>%
+  select(prob,lci,uci, worfreq_binary , HRSLEEP) %>% 
+  filter(HRSLEEP %in% c(4, 5, 6, 7, 8, 9, 10)) %>%
+  group_by(HRSLEEP, worfreq_binary) %>%
+  summarize(prob = mean(prob))
+```
+
