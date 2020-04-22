@@ -17,7 +17,7 @@ library(gtools)
 
 ```{r}
 # Fit full model with BMI as response (secondary hypothesis)
-model_full <- glm(data = data, log(BMI) ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
+model_full <- lm(data = data, log(BMI) ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
 
 summary(model_full)
 ```
@@ -161,7 +161,7 @@ model_nested <- lm(data = data, log(BMI) ~ HRSLEEP + log(AGE) + activity_score +
 
 summary(model_nested)
 ```
-Multiple Regression Model: 
+Nested Multiple Regression Model: 
 
 $BMI = \beta_0 + \beta_1\cdot HRSLEEP + \beta_2\cdot log(AGE) + \beta_3\cdot activity\_score + \beta_4\cdot SEX + \beta_5\cdot income\_high + \beta_6\cdot income\_middle + \beta_7\cdot health\_binary + \beta_8\cdot race\_asian + \beta_9\cdot race\_black + \beta_10\cdot race\_na$
 
@@ -198,6 +198,35 @@ We are 95% confident that for each hour increase in the number of hours and indi
 ```{r}
 exp(confint(model_nested))
 ```
+
+## Nested F-Test
+
+$H_0: \beta_2 = \beta_3 = 0$ 
+
+$H_a: \beta_i \ne 0$
+
+$\alpha = 0.05$
+
+### Nested Model
+```{r}
+anova(model_nested)
+```
+
+### Full Model
+```{r}
+anova(model_full)
+```
+
+##### Nested F Test
+```{r}
+anova(model_nested, model_full)
+```
+
+The nested-F test is $$Nested F = \frac{\frac{SSM_\text{full}-SSM_\text{nested}}{\text{Number of predictors}}}{\frac{SSE_\text{Full}}{n-k-1}}$$
+
+In this case, we have $Nested F = \frac{\frac{35.38-35.26}{2}}{\frac{683.85}{19861-10-1}} = \frac{\frac{0.12}{2}}{0.034} = \frac{0.06}{0.034} = 1.76$
+
+The value of the nested F-statistic is 1.76 on a distribution with 2 degrees of freedom on the numerator and 1948 degrees of freedom on the denominator. This yields a p-value of 0.15, which is not significant at the alpha = 0.05 level. We therefore fail to reject the null hypothesis that the the full model including the worry frequency and worry frequency/hours of sleep interaction variable performs better than the nested model based on hours of sleep alone.
 
 # Logistic Model
 ```{r}
@@ -313,3 +342,19 @@ We are 95% confident that adjusting for our confounding variables, the magnitude
 ```{r, message = FALSE}
 exp(confint(model_logistic))
 ```
+
+## Likelihood Ratio Test
+
+$H_0: \beta_i = 0$ 
+
+$H_a: \beta_i \ne 0$
+
+$\alpha = 0.05$
+
+```{r}
+# Load necessary package
+require(lmtest)
+lrtest(model_logistic)
+```
+
+The $-2log(L)$ values are -12154 and -11800 for the null model and full logistic model, respectively. This yields a G-statistic of -12154 - (-11800) = -354. Compared to a chi-distribution with 12 degrees of freedom, the p-value is less than 2.2e-16, which is significant at the alpha = 0.05 level. We therefore reject the null hypothesis and conclude that the multiple logistic regression model based on sleep, worry frequency, and the interaction between sleep and worry frequency is effective at explaining the probability of being obese.
