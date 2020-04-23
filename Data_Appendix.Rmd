@@ -268,3 +268,46 @@ ggplot(data, aes(x = AGE, y = BMI))+
   geom_smooth(method = lm, se = FALSE)
 ```
 
+# Tallies after data wrangling
+```{r}
+# Look at distributions of variables
+favstats(~BMI, data = data)
+```
+
+```{r}
+favstats(~HRSLEEP, data = data)
+```
+
+```{r}
+favstats(~AGE, data = data)
+```
+
+```{r}
+favstats(~activity_score, data = data)
+```
+
+```{r}
+tally(~SEX, data = data)
+```
+
+```{r}
+tally(~income_high, data = data)
+tally(~income_middle, data = data)
+```
+
+
+```{r}
+tally(~race_asian, data = data)
+tally(~race_black, data = data)
+tally(~race_na, data = data)
+```
+
+
+```{r}
+tally(~health_binary, data = data)
+```
+
+
+```{r}
+tally(~worfreq_binary, data = data)
+```
