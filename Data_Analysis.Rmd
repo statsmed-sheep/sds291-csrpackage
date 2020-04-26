@@ -358,3 +358,18 @@ lrtest(model_logistic)
 ```
 
 The $-2log(L)$ values are $-2\cdot -12154 = 24308$ and $-2\cdot -11800 = 23600$ for the null model and full logistic model, respectively. This yields a G-statistic of 24308 - (23600) = 708. Compared to a chi-distribution with 12 degrees of freedom, the p-value is less than 2.2e-16, which is significant at the alpha = 0.05 level. We therefore reject the null hypothesis and conclude that the multiple logistic regression model based on sleep, worry frequency, and the interaction between sleep and worry frequency is effective at explaining the probability of being obese.
+
+```{r}
+# code from Logistic Regression visualization practice activity 4/20/20
+preds <- augment(x=model_logistic, type.predict = "response") %>%
+  mutate(lci=`.fitted`-(1.96*`.se.fit`),
+         uci=`.fitted`+(1.96*`.se.fit`)) %>%
+  rename(prob=`.fitted`)
+
+probs<- preds %>%
+  select(prob,lci,uci, worfreq_binary , HRSLEEP, BMI_binary)
+
+library(InformationValue)
+Concordance(probs$BMI_binary, probs$prob)
+```
+
