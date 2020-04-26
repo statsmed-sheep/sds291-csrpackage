@@ -212,7 +212,7 @@ We chose this model because the addition of the interaction term explained signi
 
 ```{r, message=FALSE, results="asis"}
 library(stargazer)
-stargazer(m1,m2,m3, type="text")
+stargazer(m1,m2,m3, type="text", results = "asis")
 ```
 
 ## Exercise 22.Use the code below to generate a figure depicting the second model.
