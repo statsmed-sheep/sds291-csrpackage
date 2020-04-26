@@ -48,7 +48,8 @@ With the binary response variable BMI_binary, with the two categories “obese�
 ## Results
 
     After performing data wrangling and filtering out observations not applicable to our analysis (described above), we fit our regression models using a sample size of n = 19,861, with n = 9,234 males and 10,627 females and a median age of 52 years. The median BMI was 27.05, and the median number of hours of sleep is 7. There were n = 7,798 individuals classified as high income, n = 5,695 as middle income, and n = 6,368 as low income. The majority of the individuals sampled identified as white (n = 16, 179), with n = 2348 identifying as black or African American, n = 1055 identifying as Asian, and n = 279 identifying as Native American or Alaska native. The majority of individuals sampled reported being in good, very good, or excellent overall health (n = 17,379), with n = 2,482 reporting fair or poor health. The median activity score was 889. The majority of individuals reported worrying less frequently than daily (n = 17,925), with n = 1,936 reporting worrying daily.
-In order to analyze our primary hypothesis based on our nested model ($$log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_'X$$), we performed a t-test for the HRSLEEP coefficient with the hypotheses
+In order to analyze our primary hypothesis based on our nested model $$\begin{split}
+log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP +\beta'X \end{split}$$, we performed a t-test for the HRSLEEP coefficient with the hypotheses
 
 $H_0: \beta_1 = 0$
 
@@ -56,7 +57,10 @@ $H_a: \beta_1 \ne 0$
 
   We performed all of our significance tests at the 0.05 significance level. The coefficient for HRSLEEP was significant at the 0.05 level (p < 0.001), indicating a significant relationship between hours of sleep and BMI. 
    
-  Our secondary hypothesis based on our full model (log(BMI) =0 + 1HRSLEEP + 2worfreqbinary + 3HRSLEEPworfreqbinary + 'X was examined using three t-tests on the coefficients for HRSLEEP, worfreq_binary and the interaction HRSLEEP⋅worfreq_binary, using the following hypotheses, for i = 1, 2, and 3:
+  Our secondary hypothesis based on our full model $$\begin{split}
+log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq_binary + \\
+ \beta_3 \cdot (HRSLEEP \cdot worfreq_binary) +\beta'X
+\end{split}$$ was examined using three t-tests on the coefficients for HRSLEEP, worfreq_binary and the interaction HRSLEEP⋅worfreq_binary, using the following hypotheses, for i = 1, 2, and 3:
   
 $H_0: \beta_i = 0$
 
