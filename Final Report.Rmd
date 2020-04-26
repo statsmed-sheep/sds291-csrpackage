@@ -3,10 +3,18 @@ title: "Final Report"
 author: "Rose Porta and Clara Li"
 date: "4/26/2020"
 output: pdf_document
+editor_options: 
+  chunk_output_type: inline
 ---
 ```{r}
 # knitr settings to control how R chunks work and how the pdf is compiled when knit.
 require(knitr)
+require(xtable)
+options(xtable.floating = FALSE)
+options(xtable.timestamp = "")
+require(tidyverse)
+require(gtools)
+require(broom)
 opts_chunk$set(
   tidy=TRUE,                     # display code as typed
   size="small",                   # slightly smaller font for code
@@ -73,8 +81,8 @@ $H_a: \beta_1 \ne 0$
   We performed all of our significance tests at the 0.05 significance level. The coefficient for HRSLEEP was significant at the 0.05 level (p < 0.001), indicating a significant relationship between hours of sleep and BMI. 
    
   Our secondary hypothesis based on our full model $$\begin{split}
-log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq_binary + \\
- \beta_3 \cdot (HRSLEEP \cdot worfreq_binary) +\beta'X
+log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq\_binary +
+ \beta_3 \cdot (HRSLEEP \cdot worfreq\_binary) + \beta'X
 \end{split}$$ was examined using three t-tests on the coefficients for HRSLEEP, worfreq_binary and the interaction HRSLEEP⋅worfreq_binary, using the following hypotheses, for i = 1, 2, and 3:
   
 $H_0: \beta_i = 0$
@@ -82,6 +90,19 @@ $H_0: \beta_i = 0$
 $H_a: \beta_i \ne 0$
 
   The coefficient for HRSLEEP remained significant for the full model (p < 0.05). However, neither the coefficient for worfreq_binary or the interaction HRSLEEP⋅worfreq_binary was found to be significant (p < 0.10 but > 0.05 for both variables).
+  
+```{r, include=FALSE}
+preds <- augment(model_full) %>%
+  mutate(.fitted = exp(.fitted)) %>% 
+  mutate(lci=`.fitted`-(1.96*`.se.fit`),
+         uci=`.fitted`+(1.96*`.se.fit`)) %>% 
+  rename(predicted_BMI=`.fitted`) %>% 
+  select(HRSLEEP, worfreq_binary, predicted_BMI, lci, uci) %>% 
+  filter(HRSLEEP > 4, HRSLEEP < 11) %>% 
+  group_by(HRSLEEP, worfreq_binary) %>% 
+  summarize(avg_predicted_BMI = mean(predicted_BMI), avg_lci = mean(lci), avg_uci = mean(uci))
+print(xtable(preds))
+```
   
     To determine whether the worry frequency and interaction term significantly improved the model, a nested F-test was performed on the full and nested models above. The test indicated that the full model including worry frequency and its interaction with sleep did not explain significantly more variation in BMI than the nested model without either variable. This is consistent with the similar R^2 values between the full and nested models (R^2 = 0.04862 vs. 0.04854).
     
@@ -92,6 +113,23 @@ $H_0: \beta_i = 0$
 $H_a: \beta_i \ne 0$
 
 All coefficients were significant (p < 0.05). A likelihood ratio test was also performed, yielding a significant p-value (p < 0.05). The concordance value was 0.617, indicating our model accurately predicted 61.7% of outcomes in the model.
+
+```{r}
+preds <- augment(x=model_logistic, type.predict = "response") %>%
+  mutate(lci=`.fitted`-(1.96*`.se.fit`),
+         uci=`.fitted`+(1.96*`.se.fit`)) %>%
+  rename(prob=`.fitted`)
+
+probs<- preds %>%
+  select(prob,lci,uci, worfreq_binary , HRSLEEP)
+probs<- preds %>%
+  select(prob,lci,uci, worfreq_binary , HRSLEEP) %>% 
+  filter(HRSLEEP %in% c(4, 5, 6, 7, 8, 9, 10)) %>%
+  group_by(HRSLEEP, worfreq_binary) %>%
+  summarize(prob = mean(prob))
+
+print(xtable(probs))
+```
 
 ## Discussion
 
