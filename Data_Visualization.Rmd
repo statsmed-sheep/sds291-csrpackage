@@ -108,7 +108,7 @@ Prob_Plot <- probs %>%
   filter(HRSLEEP %in% c(4, 5, 6, 7, 8, 9, 10)) %>%
   group_by(HRSLEEP, worfreq_binary) %>%
   slice(1) %>%
-  ggplot(aes(y = prob, x = HRSLEEP, color = as_factor(worfreq_binary))) +
+  ggplot(aes(y = prob, x = HRSLEEP), color = as.factor(worfreq_binary)) +
         geom_pointrange(aes(ymin = lci, ymax = uci),
                        position = position_dodge(width = 3),
                        size = .75) +
