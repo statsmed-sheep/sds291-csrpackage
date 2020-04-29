@@ -2,8 +2,10 @@
 title: "Final Report"
 author: "Rose Porta and Clara Li"
 date: "4/26/2020"
-output: pdf_document
-editor_options: 
+output:
+  word_document: default
+  pdf_document: default
+editor_options:
   chunk_output_type: console
 ---
 ```{r}
@@ -40,19 +42,19 @@ opts_chunk$set(
 
 ## Methods 
 
-###Data
+### Data
   This study used data from IPUMS-NHIS, the National Health Interview Survey from 2018. The data was collected by obtaining a random sample of 35,000 U.S. households and randomly selecting one adult and one child (if any were present) from each. Data analysis was restricted to those 18 years and older, to avoid bias from adolescents undergoing puberty and possibly sleeping more.
   
   An observational unit comprised of an individual adult in the U.S. surveyed by the CDC’s National Center for Health Statistics. The population we intend to generalize our analysis to is the adult population of the United States (roughly 300 million individuals total).
 
-###Variables
+### Variables
   The variables in our analysis include BMI (“BMI”, response), hours of sleep (“HRSLEEP”, primary explanatory), worry frequency (from “WORFREQ”, secondary explanatory), age (“AGE”, covariate), sex (“SEX”, covariate), race (from “RACEA”, covariate), activity level score (calculated from “STRONGFWK”, “MOD10FWK”, and “VIG10FWK”, covariate), income level (from “INCFAM07ON”, covariate), and overall health (from “HEALTH”, covariate).
   
   BMI is a continuous numerical variable indicating body mass index. HRSLEEP is an integer between 1 and 24 indicating self-reported number of hours of sleep per night an individual gets. We are analyzing anxiety using a binary variable worfreq_binary, with the two categories “worries daily” and “worries less frequently than daily”. We created this variable by collapsing the WORFREQ variable, which originally had 5 categories. We collapsed it in this way because after analyzing a scatterplot of hours of sleep versus BMI faceted by the 5 categories, the association between sleep and BMI for the “daily” group appeared to be different from the other groups. AGE is an integer indicating age in years. We are controlling for activity level using the numerical variable activity_score, which we created using the Oncology Nursing Society formula Weekly leisure activity score = (9 × Strenuous) + (5 × Moderate) + (3 × Light) from the Godin Leisure-Time Exercise Questionnaire. We substituted strength exercise for light exercise due to the availability of the IPUMS data, and we think strength training is analogous to light exercise for the purposes of our analysis. SEX is a binary variable indicating male or female. In order to control for race, we created 3 binary variables, race_asian (Asian versus not Asian), race_black (black/African American versus not black/African American), and race_na (Native American or Alaska native or not), with white race as the reference group. We collapsed the RACEA variable in this way based on the race categories available, analysis of a faceted scatterplot of sleep versus BMI, as well as rational in order to avoid over complicating our model. In order to control for income level, we created two binary variables, income_high (annual family income over \$75,000 or not), and income_middle (annual family income between \$35,000 and \$75,000 or not), with low income (annual family income below \$35,000) as the reference group. We collapsed the NCFAM07ON variable in this way based on the sample sizes of each group as well as logistic reasons to avoid overcomplicating our analysis. We are controlling for overall health using the binary variable health_binary, with two categories “good” and “poor”. We collapsed the HEALTH variable, which originally had 5 categories, in this way based on the sample sizes of each group as well as logistic reasons to avoid overcomplicating our analysis. 
 
   Since our data is based on survey responses, all values are self-reported. Additionally, we did not include in our analysis any values for any of the variables that corresponded to non-response, inavailability, or extreme values that had been top or bottom coded. 
   
-###Analytic Methods
+### Analytic Methods
 
   In order to analyze our primary hypothesis, we fit a multiple linear regression model with the form $log(BMI) = \beta_0 + \beta_1 HRSLEEP + \beta'X$, where $\beta'X$ represents our vector of covariates outlines above. A log transformation on BMI was performed after a normal Q-Q plot and a histogram of residuals revealed a severe violation of the normality assumption for linear regression. The assumption became reasonable with the transformation applied. 
   
@@ -100,7 +102,7 @@ preds <- augment(model_full) %>%
   rename(predicted_BMI=`.fitted`) %>% 
   select(HRSLEEP, worfreq_binary, predicted_BMI, lci, uci) %>% 
   filter(HRSLEEP > 4, HRSLEEP < 11) %>% 
-  group_by(HRSLEEP, worfreq_binary) %>% 
+  group_by(worfreq_binary, HRSLEEP) %>% 
   summarize(avg_predicted_BMI = mean(predicted_BMI), avg_lci = mean(lci), avg_uci = mean(uci))
 print(xtable(preds))
 ```
@@ -131,7 +133,7 @@ probs<- preds %>%
 probs<- preds %>%
   select(prob,lci,uci, worfreq_binary , HRSLEEP) %>% 
   filter(HRSLEEP %in% c(4, 5, 6, 7, 8, 9, 10)) %>%
-  group_by(HRSLEEP, worfreq_binary) %>%
+  group_by(worfreq_binary, HRSLEEP) %>%
   summarize(prob = mean(prob))
 
 print(xtable(probs))
