@@ -4,7 +4,7 @@ author: "Rose Porta and Clara Li"
 date: "4/26/2020"
 output: pdf_document
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 ```{r}
 # knitr settings to control how R chunks work and how the pdf is compiled when knit.
@@ -48,17 +48,17 @@ opts_chunk$set(
 ###Variables
   The variables in our analysis include BMI (“BMI”, response), hours of sleep (“HRSLEEP”, primary explanatory), worry frequency (from “WORFREQ”, secondary explanatory), age (“AGE”, covariate), sex (“SEX”, covariate), race (from “RACEA”, covariate), activity level score (calculated from “STRONGFWK”, “MOD10FWK”, and “VIG10FWK”, covariate), income level (from “INCFAM07ON”, covariate), and overall health (from “HEALTH”, covariate).
   
-  BMI is a continuous numerical variable indicating body mass index. HRSLEEP is an integer between 1 and 24 indicating self-reported number of hours of sleep per night an individual gets. We are analyzing anxiety using a binary variable worfreq_binary, with the two categories “worries daily” and “worries less frequently than daily”. We created this variable by collapsing the WORFREQ variable, which originally had 5 categories. We collapsed it in this way because after analyzing a scatterplot of hours of sleep versus BMI faceted by the 5 categories, the association between sleep and BMI for the “daily” group appeared to be different from the other groups. AGE is an integer indicating age in years. We are controlling for activity level using the numerical variable activity_score, which we created using the Oncology Nursing Society formula Weekly leisure activity score = (9 × Strenuous) + (5 × Moderate) + (3 × Light) from the Godin Leisure-Time Exercise Questionnaire. We substituted strength exercise for light exercise due to the availability of the IPUMS data, and we think strength training is analogous to light exercise for the purposes of our analysis. SEX is a binary variable indicating male or female. In order to control for race, we created 3 binary variables, race_asian (Asian versus not Asian), race_black (black/African American versus not black/African American), and race_na (Native American or Alaska native or not), with white race as the reference group. We collapsed the RACEA variable in this way based on the race categories available, analysis of a faceted scatterplot of sleep versus BMI, as well as rational in order to avoid over complicating our model. In order to control for income level, we created two binary variables, income_high (annual family income over \$75,000 or not), and income_middle (annual family income between \$35,000 and \$75,000 or not), with low income (annual family income below $35,000) as the reference group. We collapsed the NCFAM07ON variable in this way based on the sample sizes of each group as well as logistic reasons to avoid overcomplicating our analysis. We are controlling for overall health using the binary variable health_binary, with two categories “good” and “poor”. We collapsed the HEALTH variable, which originally had 5 categories, in this way based on the sample sizes of each group as well as logistic reasons to avoid overcomplicating our analysis. 
+  BMI is a continuous numerical variable indicating body mass index. HRSLEEP is an integer between 1 and 24 indicating self-reported number of hours of sleep per night an individual gets. We are analyzing anxiety using a binary variable worfreq_binary, with the two categories “worries daily” and “worries less frequently than daily”. We created this variable by collapsing the WORFREQ variable, which originally had 5 categories. We collapsed it in this way because after analyzing a scatterplot of hours of sleep versus BMI faceted by the 5 categories, the association between sleep and BMI for the “daily” group appeared to be different from the other groups. AGE is an integer indicating age in years. We are controlling for activity level using the numerical variable activity_score, which we created using the Oncology Nursing Society formula Weekly leisure activity score = (9 × Strenuous) + (5 × Moderate) + (3 × Light) from the Godin Leisure-Time Exercise Questionnaire. We substituted strength exercise for light exercise due to the availability of the IPUMS data, and we think strength training is analogous to light exercise for the purposes of our analysis. SEX is a binary variable indicating male or female. In order to control for race, we created 3 binary variables, race_asian (Asian versus not Asian), race_black (black/African American versus not black/African American), and race_na (Native American or Alaska native or not), with white race as the reference group. We collapsed the RACEA variable in this way based on the race categories available, analysis of a faceted scatterplot of sleep versus BMI, as well as rational in order to avoid over complicating our model. In order to control for income level, we created two binary variables, income_high (annual family income over \$75,000 or not), and income_middle (annual family income between \$35,000 and \$75,000 or not), with low income (annual family income below \$35,000) as the reference group. We collapsed the NCFAM07ON variable in this way based on the sample sizes of each group as well as logistic reasons to avoid overcomplicating our analysis. We are controlling for overall health using the binary variable health_binary, with two categories “good” and “poor”. We collapsed the HEALTH variable, which originally had 5 categories, in this way based on the sample sizes of each group as well as logistic reasons to avoid overcomplicating our analysis. 
 
   Since our data is based on survey responses, all values are self-reported. Additionally, we did not include in our analysis any values for any of the variables that corresponded to non-response, inavailability, or extreme values that had been top or bottom coded. 
   
 ###Analytic Methods
 
-  In order to analyze our primary hypothesis, we fit a multiple linear regression model with the form $log(BMI) = \beta_0 + \beta_1 HRSLEEP +\beta'X$, where $\beta'X$ represents our vector of covariates outlines above. A log transformation on BMI was performed after a normal Q-Q plot and a histogram of residuals revealed a severe violation of the normality assumption for linear regression. The assumption became reasonable with the transformation applied. 
+  In order to analyze our primary hypothesis, we fit a multiple linear regression model with the form $log(BMI) = \beta_0 + \beta_1 HRSLEEP + \beta'X$, where $\beta'X$ represents our vector of covariates outlines above. A log transformation on BMI was performed after a normal Q-Q plot and a histogram of residuals revealed a severe violation of the normality assumption for linear regression. The assumption became reasonable with the transformation applied. 
   
   In order to analyze our secondary hypothesis, we fit a multiple linear regression model with the form 
   
-$log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq_binary + \beta_3 \cdot (HRSLEEP \cdot worfreq_binary) +\beta'X$
+$log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq\_binary + \beta_3 \cdot (HRSLEEP \cdot worfreq\_binary) +\beta'X$
 
   As well as a multiple logistic regression model with the form
   
@@ -66,13 +66,13 @@ $log(odds) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq\_binary + \
  
 With the binary response variable BMI_binary, with the two categories “obese” (BMI >= 30) and “not obese” (BMI < 30). 
 
-  In order to analyze the significance of the worry frequency variable, we performed a nested F-test comparing the linear model with the worfreq_binary variable and the interaction $HRSLEEP \cdot worfreq_binary$ to the model without these two terms.
+  In order to analyze the significance of the worry frequency variable, we performed a nested F-test comparing the linear model with the worfreq_binary variable and the interaction $HRSLEEP \cdot worfreq\_binary$ to the model without these two terms.
   
 ## Results
 
     After performing data wrangling and filtering out observations not applicable to our analysis (described above), we fit our regression models using a sample size of n = 19,861, with n = 9,234 males and 10,627 females and a median age of 52 years. The median BMI was 27.05, and the median number of hours of sleep is 7. There were n = 7,798 individuals classified as high income, n = 5,695 as middle income, and n = 6,368 as low income. The majority of the individuals sampled identified as white (n = 16, 179), with n = 2348 identifying as black or African American, n = 1055 identifying as Asian, and n = 279 identifying as Native American or Alaska native. The majority of individuals sampled reported being in good, very good, or excellent overall health (n = 17,379), with n = 2,482 reporting fair or poor health. The median activity score was 889. The majority of individuals reported worrying less frequently than daily (n = 17,925), with n = 1,936 reporting worrying daily.
-In order to analyze our primary hypothesis based on our nested model $$\begin{split}
-log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP +\beta'X \end{split}$$, we performed a t-test for the HRSLEEP coefficient with the hypotheses
+In order to analyze our primary hypothesis based on our nested model 
+$log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP +\beta'X$, we performed a t-test for the HRSLEEP coefficient with the hypotheses
 
 $H_0: \beta_1 = 0$
 
@@ -80,10 +80,7 @@ $H_a: \beta_1 \ne 0$
 
   We performed all of our significance tests at the 0.05 significance level. The coefficient for HRSLEEP was significant at the 0.05 level (p < 0.001), indicating a significant relationship between hours of sleep and BMI. 
    
-  Our secondary hypothesis based on our full model $$\begin{split}
-log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq\_binary +
- \beta_3 \cdot (HRSLEEP \cdot worfreq\_binary) + \beta'X
-\end{split}$$ was examined using three t-tests on the coefficients for HRSLEEP, worfreq_binary and the interaction HRSLEEP⋅worfreq_binary, using the following hypotheses, for i = 1, 2, and 3:
+  Our secondary hypothesis based on our full model $log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP + \beta_2 \cdot worfreq\_binary + \beta_3 \cdot (HRSLEEP \cdot worfreq\_binary) + \beta'X$ was examined using three t-tests on the coefficients for HRSLEEP, worfreq_binary and the interaction HRSLEEP⋅worfreq_binary, using the following hypotheses, for i = 1, 2, and 3:
   
 $H_0: \beta_i = 0$
 
@@ -92,6 +89,10 @@ $H_a: \beta_i \ne 0$
   The coefficient for HRSLEEP remained significant for the full model (p < 0.05). However, neither the coefficient for worfreq_binary or the interaction HRSLEEP⋅worfreq_binary was found to be significant (p < 0.10 but > 0.05 for both variables).
   
 ```{r, include=FALSE}
+data <- read.csv("filename.csv")
+
+model_full <- lm(data = data, log(BMI) ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
+
 preds <- augment(model_full) %>%
   mutate(.fitted = exp(.fitted)) %>% 
   mutate(lci=`.fitted`-(1.96*`.se.fit`),
@@ -115,6 +116,11 @@ $H_a: \beta_i \ne 0$
 All coefficients were significant (p < 0.05). A likelihood ratio test was also performed, yielding a significant p-value (p < 0.05). The concordance value was 0.617, indicating our model accurately predicted 61.7% of outcomes in the model.
 
 ```{r}
+data_binary <- data %>% 
+  mutate(BMI_binary = ifelse(BMI >= 30, 1, 0))
+
+model_logistic <- glm(BMI_binary ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na, family = binomial, data = data_binary)
+
 preds <- augment(x=model_logistic, type.predict = "response") %>%
   mutate(lci=`.fitted`-(1.96*`.se.fit`),
          uci=`.fitted`+(1.96*`.se.fit`)) %>%
