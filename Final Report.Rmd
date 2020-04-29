@@ -29,7 +29,7 @@ opts_chunk$set(
 ## Abstract
     Despite its well-studied effect on physical health, sleep in relation to weight management has been relatively little researched. Mental health, particularly depression, has also shown possible predictive power for weight, yet remains largely unexplored in relation to sleep quality and weight. A cross-sectional analysis of data (2018, n = 19,861) sourced from the IPUMS National Health Interview Survey was performed by fitting a multiple regression model using sleep, anxiety, and an interaction variable as predictors of BMI. Sleep was found to be a significant predictor (p < 0.05) for BMI, while anxiety frequency and the interaction between anxiety and sleep fell short of the significance threshold (p = 0.0680, p = 0.0535 respectively). Our findings corroborate the current literature on sleep and weight; despite not being significant, the small p-values for anxiety frequency and its interaction with sleep nevertheless also suggest further research into both variables as predictors of BMI is warranted.
 
-## Background and Significance (½ page)
+## Background and Significance 
 
   Over the past four decades, excess weight has become an increasingly critical public health concern. Tied to a plethora of health issues, from diabetes, cardiac arrest, and some kinds of cancer, excess weight and obesity were found in 71.6% of adults 20 years and older in a 2015-16 survey by the CDC. In order to combat this epidemic of overweightness, research regarding exercise and dietary habits in relation to BMI have continually emerged and disseminated. 
   
@@ -72,6 +72,7 @@ With the binary response variable BMI_binary, with the two categories “obese�
 ## Results
 
     After performing data wrangling and filtering out observations not applicable to our analysis (described above), we fit our regression models using a sample size of n = 19,861, with n = 9,234 males and 10,627 females and a median age of 52 years. The median BMI was 27.05, and the median number of hours of sleep is 7. There were n = 7,798 individuals classified as high income, n = 5,695 as middle income, and n = 6,368 as low income. The majority of the individuals sampled identified as white (n = 16, 179), with n = 2348 identifying as black or African American, n = 1055 identifying as Asian, and n = 279 identifying as Native American or Alaska native. The majority of individuals sampled reported being in good, very good, or excellent overall health (n = 17,379), with n = 2,482 reporting fair or poor health. The median activity score was 889. The majority of individuals reported worrying less frequently than daily (n = 17,925), with n = 1,936 reporting worrying daily.
+    
 In order to analyze our primary hypothesis based on our nested model 
 $log(BMI) = \beta_0 + \beta_1 \cdot HRSLEEP +\beta'X$, we performed a t-test for the HRSLEEP coefficient with the hypotheses
 
@@ -88,8 +89,13 @@ $H_0: \beta_i = 0$
 $H_a: \beta_i \ne 0$
 
   The coefficient for HRSLEEP remained significant for the full model (p < 0.05). However, neither the coefficient for worfreq_binary or the interaction HRSLEEP⋅worfreq_binary was found to be significant (p < 0.10 but > 0.05 for both variables).
+
+The results of our full linear regression model are summarized in table 1 below. The table displays the average predicted BMIs and corresponding 95% prediction intervals by hours of sleep (5-10) and whether or not an individual worries daily (1 = worries daily, 0 = worries less frequently).
+
+## Table 1
   
 ```{r, include=FALSE}
+# create table for linear model
 data <- read.csv("filename.csv")
 
 model_full <- lm(data = data, log(BMI) ~ HRSLEEP + worfreq_binary + I(HRSLEEP*worfreq_binary) + log(AGE) + activity_score + SEX + income_high + income_middle + health_binary + race_asian + race_black + race_na)
@@ -116,7 +122,12 @@ $H_a: \beta_i \ne 0$
 
 All coefficients were significant (p < 0.05). A likelihood ratio test was also performed, yielding a significant p-value (p < 0.05). The concordance value was 0.617, indicating our model accurately predicted 61.7% of outcomes in the model.
 
+The results of our logistic regression model are summarized in table 2 below. The table displays the average predicted probabilities that an individual is classified as obese, and corresponding 95% prediction intervals, by hours of sleep (5-10) and whether or not an individual worries daily (1 = worries daily, 0 = worries less frequently).
+
+## Table 2
+
 ```{r, include=FALSE}
+# create table for logistic model
 data_binary <- data %>% 
   mutate(BMI_binary = ifelse(BMI >= 30, 1, 0))
 
@@ -131,9 +142,9 @@ probs<- preds %>%
   select(prob,lci,uci, worfreq_binary , HRSLEEP)
 probs<- preds %>%
   select(prob,lci,uci, worfreq_binary , HRSLEEP) %>% 
-  filter(HRSLEEP %in% c(4, 5, 6, 7, 8, 9, 10)) %>%
+  filter(HRSLEEP %in% c(5, 6, 7, 8, 9, 10)) %>%
   group_by(worfreq_binary, HRSLEEP) %>%
-  summarize(prob = mean(prob))
+  summarize(prob = mean(prob), avg_lci = mean(lci), avg_uci = mean(uci))
 
 print(xtable(probs))
 ```
