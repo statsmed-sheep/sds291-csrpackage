@@ -112,7 +112,7 @@ preds <- augment(model_full) %>%
   filter(HRSLEEP > 4, HRSLEEP < 11) %>% 
   group_by(worfreq_binary, HRSLEEP) %>% 
   summarize(avg_predicted_BMI = mean(predicted_BMI), avg_lci = mean(lci), avg_uci = mean(uci))
-print(xtable(preds))
+print(xtable(preds), comment = FALSE)
 ```
   
   To determine whether the worry frequency and interaction term significantly improved the model, a nested F-test was performed on the full and nested models above. The test indicated that the full model including worry frequency and its interaction with sleep did not explain significantly more variation in BMI than the nested model without either variable. This is consistent with the similar R^2 values between the full and nested models (R^2 = 0.04862 vs. 0.04854).
@@ -148,7 +148,7 @@ probs<- preds %>%
   group_by(worfreq_binary, HRSLEEP) %>%
   summarize(prob = mean(prob), avg_lci = mean(lci), avg_uci = mean(uci))
 
-print(xtable(probs))
+print(xtable(probs), comment = FALSE)
 ```
 
 ## Discussion
