@@ -1,31 +1,14 @@
 ---
-title: "Practice markdown file"
-author: "Clara Li"
+title: "Data Appendix"
+author: "Clara Li and Rose Porta"
 date: "2/28/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(mosaic)
 library(tidyverse)
 ```
-
-```{r load_data}
-data("mtcars")
-```
-
-```{r eda}
-glimpse(mtcars)
-```
-
-
-```{r slr}
-mod1 <- lm(mpg ~ hp, data = mtcars)
-```
-
-
-## Description of the Model
-
 
 
 ```{r}
@@ -37,10 +20,57 @@ data <- read_ipums_micro(ddi)
 
 ```
 ```{r}
+# Create activity level variable and filter out non-applicable values
 data <- data %>% 
-  mutate( activity_score = (9 * VIG10FWK + 5 * MOD10FWK + 3 *   STRONGFWK))
+  mutate( activity_score = (9 * VIG10FWK + 5 * MOD10FWK + 3 *   STRONGFWK)) %>% 
+  filter(AGE >= 18, 
+         BMI != "0", BMI != "0.00", BMI != "99.80", BMI != "99.99", 
+         INCFAM07ON != "99", INCFAM07ON != "96", 
+         RACEA != "900", RACEA != "970", RACEA != "980", RACEA != "990",
+         RACEA != "600",
+         HEALTH != "0", HEALTH != "7", HEALTH != "8", HEALTH != "9", 
+         STRONGFWK != "00", STRONGFWK != "96", STRONGFWK != "97", 
+         STRONGFWK != "98", STRONGFWK != "99", 
+         MOD10FWK != "00", MOD10FWK != "96", MOD10FWK != "97", 
+         MOD10FWK != "98", MOD10FWK != "99", 
+         VIG10FWK != "00", VIG10FWK != "96", VIG10FWK != "97", 
+         VIG10FWK != "98", VIG10FWK != "99",
+         HRSLEEP != "00", HRSLEEP != "97", HRSLEEP != "98",
+         HRSLEEP != "99",
+         WORFREQ != "0", WORFREQ != "7", WORFREQ != "8", WORFREQ != "9",
+         WEIGHT != "000", WEIGHT != "100", WEIGHT != "126", 
+         WEIGHT != "274", WEIGHT != "299", WEIGHT != "996", 
+         WEIGHT != "997", WEIGHT != "998", WEIGHT != "999") %>% 
+  mutate(sex = ifelse(SEX == "1" , "Male", "Female"))
 
 ```
 
+```{r}
+str(data)
+```
 
+```{r}
+# Look at distributions of variables
+favstats(~WEIGHT, data = data)
+favstats(~HRSLEEP, data = data)
+favstats(~AGE, data = data)
+favstats(~BMI, data = data)
+favstats(~STRONGFWK, data = data)
+favstats(~MOD10FWK, data = data)
+favstats(~VIG10FWK, data = data)
+favstats(~activity_score, data = data)
+tally(~sex, data = data)
+tally(~INCFAM07ON, data = data)
+tally(~RACEA, data = data)
+tally(~HEALTH, data = data)
+tally(~WORFREQ, data = data)
+```
+```{r}
+# Collapse categorical variables
+data <- data %>% 
+  mutate(family_income = ifelse(INCFAM07ON == "10" |  INCFAM07ON == "11",          "low_income", ifelse(INCFAM07ON == "12" | INCFAM07ON == "12" |            INCFAM07ON == "", "middle_income", "high_income"))) %>% 
+  mutate(health_binary = ifelse(HEALTH == "1" | HEALTH == "2" | HEALTH ==          "3", "good", "poor")) %>% 
+  select(WEIGHT, HRSLEEP, AGE, BMI, activity_score, sex, RACEA, 
+         family_income, health_binary)
+```
 
